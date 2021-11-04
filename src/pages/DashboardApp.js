@@ -4,11 +4,8 @@ import { Box, Grid, Container, Typography } from '@mui/material';
 import Page from '../components/Page';
 import {
   AppTasks,
-  AppNewUsers,
-  AppBugReports,
-  AppItemOrders,
   AppNewsUpdate,
-  AppWeeklySales,
+  AppNotice,
   AppOrderTimeline,
   AppCurrentVisits,
   AppWebsiteVisits,
@@ -24,32 +21,18 @@ export default function DashboardApp() {
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
-        <Box sx={{ pb: 5 }}>
-          <Typography variant="h4">Hi, Welcome back</Typography>
-        </Box>
         <Grid container spacing={3}>
-          {/* <Grid item xs={12} sm={6} md={3}>
-            <AppWeeklySales />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppNewUsers />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppItemOrders />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppBugReports />
-          </Grid> */}
           <Grid item xs={6} sm={6} md={12}>
-          <AppQuickMenu/>
+            <AppQuickMenu />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={6} lg={6}>
             <AppWebsiteVisits />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentVisits />
+          <Grid item xs={12} md={6} lg={6}>
+            {/* <AppCurrentVisits /> */}
+            <AppNotice/>
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
