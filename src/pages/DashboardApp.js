@@ -21,16 +21,16 @@ export default function DashboardApp() {
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={6} sm={6} md={12}>
             <AppQuickMenu />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={6}>
+          <Grid item xs={12} md={6} lg={4}>
             <AppWebsiteVisits />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={6}>
+          <Grid item xs={12} md={6} lg={8}>
             {/* <AppCurrentVisits /> */}
             <AppNotice/>
           </Grid>
