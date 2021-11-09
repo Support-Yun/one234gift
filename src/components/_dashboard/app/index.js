@@ -12,3 +12,4 @@ export { default as AppWebsiteVisits } from './AppWebsiteVisits';
 export { default as AppWeeklySales } from './AppWeeklySales';
 export { default as AppQuickMenu } from './AppQuickMenu';
 export { default as AppNotice } from './AppNotice';
+export { default as AppCumulativeSales } from './AppCumulativeSales';

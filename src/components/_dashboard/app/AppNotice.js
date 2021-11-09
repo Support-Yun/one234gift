@@ -1,6 +1,8 @@
-import { Card, CardHeader, CardContent } from '@mui/material';
+import { Card, CardHeader, CardContent, Stack, IconButton } from '@mui/material';
 import { height, styled } from '@mui/system';
 import { useEffect, useState } from 'react';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import DataTable from '../../table/Table';
 import Label from '../../Label';
 
@@ -11,7 +13,11 @@ const NoticeCard = styled(Card)(() => ({
 export default function AppNotice() {
   const [data, setData] = useState([
     { idx: 1, name: '국민건강보험공단부산북부지사고객지원부', when: '2021-11-03', type: '예약콜' },
-    { idx: 2, name: '한국전력공사울산지사', when: '2021-11-03', type: '예약콜' },{ idx: 3, name: '의정부우체국', when: '2021-11-15', type: '해피콜' }
+    { idx: 2, name: '한국전력공사울산지사', when: '2021-11-03', type: '예약콜' },
+    { idx: 3, name: '의정부우체국', when: '2021-11-15', type: '해피콜' },
+    { idx: 4, name: '국민건강보험공단부산북부지사고객지원부', when: '2021-11-03', type: '예약콜' },
+    { idx: 5, name: '한국전력공사울산지사', when: '2021-11-03', type: '예약콜' },
+    { idx: 6, name: '의정부우체국', when: '2021-11-15', type: '해피콜' }
   ]);
 
   const noticeTableHeader = ['고객명', '예약 날짜', '분류'];
@@ -24,7 +30,8 @@ export default function AppNotice() {
         name: data.name,
         when: data.when,
         type: (
-          <Label variant="ghost" color={(data.type === '예약콜' && 'error') || 'success'}>{data.type}
+          <Label variant="ghost" color={(data.type === '예약콜' && 'error') || 'success'}>
+            {data.type}
           </Label>
         ),
         onClick: () => alert(data.idx),
@@ -40,6 +47,15 @@ export default function AppNotice() {
       <CardHeader title="예약콜 목록" />
       <CardContent>
         <DataTable header={noticeTableHeader} data={data} />
+        <br/>
+        <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
+          <IconButton aria-label="perveBtn">
+            <KeyboardArrowLeftIcon />
+          </IconButton>
+          <IconButton aria-label="nextBtn">
+            <KeyboardArrowRightIcon />
+          </IconButton>
+        </Stack>
       </CardContent>
     </NoticeCard>
   );

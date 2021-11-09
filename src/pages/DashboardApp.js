@@ -12,7 +12,8 @@ import {
   AppQuickMenu,
   AppTrafficBySite,
   AppCurrentSubject,
-  AppConversionRates
+  AppConversionRates,
+  AppCumulativeSales
 } from '../components/_dashboard/app';
 
 // ----------------------------------------------------------------------
@@ -21,7 +22,7 @@ export default function DashboardApp() {
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           <Grid item xs={6} sm={6} md={12}>
             <AppQuickMenu />
           </Grid>
@@ -32,10 +33,22 @@ export default function DashboardApp() {
 
           <Grid item xs={12} md={6} lg={8}>
             {/* <AppCurrentVisits /> */}
-            <AppNotice/>
+            {/* <AppNotice /> */}
+            <Grid container spacing={2}>
+              <Grid item xs = {12} md={12} lg={12}>
+                <AppNotice />
+              </Grid>
+              <Grid item xs = {12} md={12} lg={12}>
+                <AppCumulativeSales />
+              </Grid>
+            </Grid>
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={12} lg={12}>
+            {/* <AppCumulativeSales /> */}
+          </Grid>
+
+          {/* <Grid item xs={12} md={6} lg={8}>
             <AppConversionRates />
           </Grid>
 
@@ -57,7 +70,7 @@ export default function DashboardApp() {
 
           <Grid item xs={12} md={6} lg={8}>
             <AppTasks />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </Page>
