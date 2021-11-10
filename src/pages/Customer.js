@@ -96,9 +96,7 @@ export default function Customer() {
     /*
      클릭된 테이블 행 값 가져오는 함수
     */
-    function getCustomertable() {
-
-    }
+    
 
     function getMockCustomers() {
         return [
