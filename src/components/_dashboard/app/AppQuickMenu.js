@@ -10,14 +10,11 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/system';
 
-const ItemButton = styled(Button)(({ theme }) => ({
-  ...theme.typography.h5,
-  paddingTop: theme.spacing(6),
-  paddingBottom: theme.spacing(6),
-  display: 'flex',
-  justifyContent: 'flex-start',
-  color: theme.palette.text.secondary
-}));
+const ItemButton = styled(Button)`
+  height:80px;
+  font-size:19px;
+  color:#4b4b4b;
+  `;
 
 const BoxCenter = styled('div')({
   width: '100%',
@@ -75,7 +72,7 @@ const data = [
 
 function QuickMenu({ name, icon, onClick }) {
   return (
-    <ItemButton onClick={onClick} fullWidth size="large" color="inherit" variant="outlined">
+    <ItemButton onClick={onClick} fullWidth color="inherit" variant="outlined">
       {icon}
       <BoxCenter>{name}</BoxCenter>
     </ItemButton>
