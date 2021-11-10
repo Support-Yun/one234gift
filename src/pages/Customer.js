@@ -5,10 +5,12 @@ import {
     Select,
     Grid,
     MenuItem,
-    Button
+    Button,
+    Container
 } from '@mui/material';
 import Page from '../components/Page';
 import DataTable from '../components/table/Table';
+import DenseTable from '../components/table/DenseTable';
 
 export default function Customer() {
     const [customerName, setCustomerName] = useState("");
@@ -19,7 +21,7 @@ export default function Customer() {
 
     function customerinfomationHandler(target) {
         setcustomerinfomation(target.value);
-        
+
 
     }
     /**
@@ -97,62 +99,128 @@ export default function Customer() {
     function getCustomertable() {
 
     }
+
+    function getMockCustomers() {
+        return [
+            {
+                customerId : 1,
+                name : "고객 업체명",
+                category : "우체국",
+                location : "서울 특별시"                
+            },
+            {
+                customerId : 2,
+                name : "고객 업체명",
+                category : "우체국",
+                location : "서울 특별시"                
+            },
+            {
+                customerId : 3,
+                name : "고객 업체명",
+                category : "우체국",
+                location : "서울 특별시"                
+            },
+            {
+                customerId : 4,
+                name : "고객 업체명",
+                category : "우체국",
+                location : "서울 특별시"
+            },
+            {
+                customerId : 5,
+                name : "고객 업체명",
+                category : "우체국",
+                location : "서울 특별시"
+            },
+        ]
+    }
+
+    const customerTableHeaderColums = ["이름", "분류", "지역"];
+
     const categoryList = ["분류", "은행", "우체국"];
     const locationList = ["지역", "서울특별시", "부산광역시"];
     const margin10Right = { marginRight: 10, width: '25%' };
     return (
         <Page title="User | Minimal-UI">
-            <Paper elevation={3} style={{ padding: 20 }}>
-                <TextField value={customerName} onChange={({ target }) => customerNameChangeHandler(target)} id="outlined-basic" label="고 객 명" style={margin10Right} variant="outlined" />
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    style={margin10Right}
-                    value={category}
-                    onChange={({ target }) => categoryChangeHandler(target)}
-                >
-                    {categoryList.map((data) => <MenuItem value={data}>{data}</MenuItem>)}
-                </Select>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={location}
-                    style={margin10Right}
-                    onChange={({ target }) => locationChangeHandler(target)}
-                >
-                    {locationList.map((data) => <MenuItem value={data}>{data}</MenuItem>)}
-                </Select>
-                <Button onClick={() => searchBtnHandler()} variant="contained" size="large" style={{ width: "10%", marginRight: 10 }}>찾 기</Button>
-                <Button color="error" onClick={() => clearBtnHandler()} variant="contained" size="large" style={{ width: "10%" }}>지우기</Button>
-            </Paper>
-            <br />
-            <Paper elevation={3} style={{ padding: 20 }}>
+            
+            <Container maxWidth="xl">
                 <Grid container spacing={3}>
-                    <Grid item xs={4} sm={4} md={4}>
-                        <DataTable
-                            header={["고객명", "상태", "분류", "지역"]}
-                            data={[
-                                { when: '서울', type: 'ksjdfh', name: '김기동', onClick: () => customerinfomationHandler },
-                                { when: '제주', type: 'ksjdfh', name: '박기동', onClick: () => alert() },
-                                { when: '충남', type: 'ksjdfh', name: '이기동', onClick: () => alert() },
-                                { when: '전남', type: 'ksjdfh', name: '정기동', onClick: () => alert() },
-                                { when: '강원', type: 'ksjdfh', name: '안기동', onClick: () => alert() },
-                            ]}
+                    <Grid item md={12} sm={6} xs={6}>
+                        <Paper elevation={3} style={{ padding: 20 }}>
+                            <TextField value={customerName} onChange={({ target }) => customerNameChangeHandler(target)} id="outlined-basic" label="고 객 명" style={margin10Right} variant="outlined" />
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                style={margin10Right}
+                                value={category}
+                                onChange={({ target }) => categoryChangeHandler(target)}
+                            >
+                                {categoryList.map((data) => <MenuItem value={data}>{data}</MenuItem>)}
+                            </Select>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={location}
+                                style={margin10Right}
+                                onChange={({ target }) => locationChangeHandler(target)}
+                            >
+                                {locationList.map((data) => <MenuItem value={data}>{data}</MenuItem>)}
+                            </Select>
+                            <Button onClick={() => searchBtnHandler()} variant="contained" size="large" style={{ width: "10%", marginRight: 10 }}>찾 기</Button>
+                            <Button color="error" onClick={() => clearBtnHandler()} variant="contained" size="large" style={{ width: "10%" }}>지우기</Button>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={6} sm={4} md={4}>
+                        <Paper elevation={3} style={{ padding: 20 }}>
+                            <Grid container spacing={3}>
+                                <DataTable
+                                    header={["고객명", "상태", "분류", "지역"]}
+                                    data={[
+                                        { when: '서울', type: 'ksjdfh', name: '김기동', onClick: () => customerinfomationHandler },
+                                        { when: '제주', type: 'ksjdfh', name: '박기동', onClick: () => alert() },
+                                        { when: '충남', type: 'ksjdfh', name: '이기동', onClick: () => alert() },
+                                        { when: '전남', type: 'ksjdfh', name: '정기동', onClick: () => alert() },
+                                        { when: '강원', type: 'ksjdfh', name: '안기동', onClick: () => alert() },
+                                    ]}
 
-                        />
+                                />
+                            </Grid>
+                        </Paper>
                     </Grid>
 
-                    <Grid item xs={8} md={8} lg={6}>
-                        <DataTable
-                            header={["고객명", "사업자번호", "상태", "분류", "FAX"]}
-                            data={[
-                                { when: '', type: '', name: '', onClick: () => alert() },
-
-                            ]}
-                        />
+                    <Grid item xs={12} md={8} lg={8}>
+                        <Paper elevation={3} style={{ padding: 20, margin: 20 }}>
+                            <table>
+                                <thead>
+                                    {
+                                        customerTableHeaderColums.map((colums)=>(
+                                            <th>{colums}</th>
+                                        ))
+                                    }
+                                </thead>
+                                <tbody>
+                                    {
+                                        getMockCustomers().map((customer)=>(
+                                            <tr onClick={()=>{
+                                                alert(customer.customerId);
+                                            }}>
+                                                <td>{customer.name}</td>
+                                                <td>{customer.category}</td>
+                                                <td>{customer.location}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                        </Paper> 
+                        <Paper elevation={3} style={{ padding: 20, margin: 20 }}>
+                            DFKJSHFJKDS
+                        </Paper>
                     </Grid>
                 </Grid>
-            </Paper>
+            </Container>
+
+
         </Page>
     );
 }
