@@ -60,7 +60,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           <NotificationsPopover />
           <AccountPopover />
         </Stack>
-      </ToolbarStyle>
+      </ToolbarStyle> 
     </RootStyle>
   );
 }

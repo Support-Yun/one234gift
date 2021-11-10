@@ -46,7 +46,7 @@ export default function AppNotice() {
     <NoticeCard>
       <CardHeader title="예약콜 목록" />
       <CardContent>
-        <DataTable header={noticeTableHeader} data={data} />
+        <DataTable header={noticeTableHeader} data={data} ignoreKey={["onClick","hover"]}/>
         <br/>
         <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
           <IconButton aria-label="perveBtn">

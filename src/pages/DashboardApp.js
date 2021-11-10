@@ -23,7 +23,7 @@ export default function DashboardApp() {
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
         <Grid container spacing={3}>
-          <Grid item xs={6} sm={6} md={12}>
+          <Grid item xs={12} sm={12} md={12}>
             <AppQuickMenu />
           </Grid>
 
