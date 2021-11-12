@@ -20,7 +20,7 @@ export default function AppNotice() {
     { idx: 6, name: '의정부우체국', when: '2021-11-15', type: '해피콜' }
   ]);
 
-  const noticeTableHeader = ['고객명', '예약 날짜', '분류'];
+  const noticeTableHeader = ['번호','고객명', '예약 날짜', '분류'];
 
   useEffect(() => {
     const contents = [];
@@ -34,7 +34,7 @@ export default function AppNotice() {
             {data.type}
           </Label>
         ),
-        onClick: () => alert(data.idx),
+        onClick: (i) => alert(i),
         hover: () => alert('호버 ?')
       });
       return null;

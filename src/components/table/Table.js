@@ -20,11 +20,19 @@ function DataTableHead({ datas }) {
 }
 
 function DataTableBody({ datas, hover, ignoreKey }) {
+  const [selectedRow, setSelectedRow] = React.useState();
+
   return (
     <TableBody>
       {datas.map((data, idx) => (
         <TableRow
-          onClick={data.onClick}
+          onClick={() => {
+            if(data.selectable){
+              setSelectedRow(data.idx)
+            }
+            data.onClick(data.idx);
+          }}
+          selected={selectedRow === data.idx}
           hover={hover}
           key={idx}
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -33,7 +41,11 @@ function DataTableBody({ datas, hover, ignoreKey }) {
             if (ignoreKey && ignoreKey.includes(key)) {
               return null;
             }
-            return <TableCell key={_idx} align="center">{data[key]}</TableCell>;
+            return (
+              <TableCell key={_idx} align="center">
+                {data[key]}
+              </TableCell>
+            );
           })}
         </TableRow>
       ))}
@@ -45,7 +57,7 @@ function DataTable({ header, data, ignoreKey }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        {/* <DataTableHead datas={header}/> */}
+        {header && <DataTableHead datas={header} />}
         <DataTableBody datas={data} hover ignoreKey={ignoreKey} />
       </Table>
     </TableContainer>
