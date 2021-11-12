@@ -15,6 +15,7 @@ import DataTable from '../components/table/Table';
 import UnstyledSwitches from '../components/Switch/Switch';
 import MaxHeightTextarea from '../components/Textfeild/Textfeild';
 
+const a = 1;
 export default function Customer() {
     const [customerName, setCustomerName] = useState("");
     const [category, setCategory] = useState("분류");
@@ -48,9 +49,41 @@ export default function Customer() {
         name: "김말숙",
         managerPhone: "010-2622-2665",
         managerRank: '사원',
-        note: '동해물과백두산이 마르고 닳도록'
+        note: '동해물과백두산이 마르고 닳도록',
+        date: "2021/11/11"
     })
+    const [recentlyorder, setrecentlyorder] = useState([
+        {
+            date: "2021/11/11",
+            Id: 1,
+            item: "청소기",
+            manager: "김말숙",
+            count: "100",
+            price: "120,000",
+            totalprice: "12,000,000",
+            type: "본품",
+            state: "계약완료",
+            bigo: ""
 
+        },
+        {
+            date: "2021/11/15",
+            Id: 1,
+            item: "노트북",
+            manager: "김말숙",
+            count: "10",
+            price: "720,000",
+            totalprice: "7,200,000",
+            type: "본품",
+            state: "계약완료",
+            bigo: ""
+        }]
+    )
+    const [Revise, setRevise] = useState({
+        ReviseId: "박말숙",
+        date: "2021/10/24",
+        contents: "고객정보 수정"
+    })
     function customerinfomationHandler(target) {
         setcustomerinfomation(target.value);
     }
@@ -134,10 +167,11 @@ export default function Customer() {
     const customerTableHeaderColums = ["업체명", "사업자번호", "상태", "분류", "FAX"];
     const customerinfoTableHeader = ["담당자명", "직급", "이메일", "메인연락처", "기타 연락처"];
     const Writerinfo = ["작성자", "직위", "연락처"];
-    const NoteWriterinfo = ["#","담당자", "직위", "연락처","메모내역"]
-
+    const NoteWriterinfo = ["#", "담당자", "직위", "연락처", "메모내역", "등록일"]
+    const recentlyorderHd = ["날짜", "주문번호", "상품명", "담당자", "수량", "판매단가", "총가격", "(샘플,본품)", "주문상태", "비고"]
     const categoryList = ["분류", "은행", "우체국"];
     const locationList = ["지역", "서울특별시", "부산광역시"];
+    const Reviserecord = ["수정자", "수정일", "수정내용"];
     const margin10Right = { marginRight: 10, width: '25%' };
     return (
         <Page title="User | Minimal-UI">
@@ -146,7 +180,7 @@ export default function Customer() {
                 <Grid container spacing={3}>
                     <Grid item md={12} sm={6} xs={6}>
                         <Paper elevation={3} style={{ padding: 20 }}>
-                            <TextField value={customerName} onChange={({ target }) => customerNameChangeHandler(target)} id="outlined-basic" label="고 객 명" style={margin10Right} variant="outlined" />
+                        <TextField value={customerName} onChange={({ target }) => customerNameChangeHandler(target)} id="outlined-basic" label="고 객 명" style={margin10Right} variant="outlined" />
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
@@ -268,13 +302,71 @@ export default function Customer() {
                                     <td>{noteWrite.WriterId}</td>
                                     <td>{noteWrite.name}</td>
                                     <td>{noteWrite.managerRank}</td>
-                                    <td>{noteWrite.managerPhone }</td>
+                                    <td>{noteWrite.managerPhone}</td>
                                     <td>{noteWrite.note}</td>
+                                    <td>{noteWrite.date}</td>
+
                                 </tbody>
                             </table>
                         </Paper>
                     </Grid>
+                    <Grid item xs={12} md={6} lg={6}>
+                        <Paper elevation={3} style={{ padding: 20, margin: 20 }}>
+                            <table style={{ width: "100%", textAlign: "center", fontSize: "0.76rem" }}>
+                                <thead>
+                                    {
+                                        recentlyorderHd.map((colums) => (
+                                            <th>{colums}</th>
+                                        ))
+                                    }
+                                </thead>
+                                <tbody>
+                                    {
+                                        recentlyorder.map((colums) => (
+                                            <tr>
+                                                <td>{colums.date}</td>
+                                                <td>{colums.Id}</td>
+                                                <td>{colums.item}</td>
+                                                <td>{colums.manager}</td>
+                                                <td>{colums.count}</td>
+                                                <td>{colums.price}</td>
+                                                <td>{colums.totalprice}</td>
+                                                <td>{colums.type}</td>
+                                                <td>{colums.state}</td>
+                                                <td>{colums.bigo}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                    <div style={{ position: "relative", right: "-550px" }}>
+                                        {/* <BasicButtons
+                                        onClick={()=>alert("BasicButtons")}/> */}
+                                        <Button variant="contained" onClick={() => alert()}>더보기</Button>
+                                    </div>
+                                </tbody>
 
+                            </table>
+                        </Paper>
+                        <Paper elevation={3} style={{ padding: 20, margin: 20 }}>
+
+                            <table style={{ width: "100%", textAlign: "center" }}>
+                                <thead>
+                                    {
+                                        Reviserecord.map((colums) => (
+                                            <th>{colums}</th>
+                                        ))
+                                    }
+                                </thead>
+                                <tbody>
+                                    <td>{Revise.ReviseId}</td>
+                                    <td>{Revise.date}</td>
+                                    <td>{Revise.contents}</td>
+                                    <Button variant="contained" onClick={() => alert()}>더보기</Button>
+
+                                </tbody>
+                            </table>
+                        </Paper>
+
+                    </Grid>
                 </Grid>
             </Container>
 
