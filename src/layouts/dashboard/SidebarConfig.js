@@ -46,9 +46,19 @@ const sidebarConfig = [
     title: 'Not found',
     path: '/404',
     icon: getIcon(alertTriangleFill)
-  },{
+  }, {
     title: 'Orders',
     path: '/dashboard/orders',
+    icon: getIcon(shoppingBagFill)
+  }
+  , {
+    title: 'Customer',
+    path: '/dashboard/Customer',
+    icon: getIcon(shoppingBagFill)
+  },
+  {
+    title: 'AddOrder',
+    path: '/dashboard/AddOrder',
     icon: getIcon(shoppingBagFill)
   },
 ];
