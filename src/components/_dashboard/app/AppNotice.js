@@ -25,7 +25,7 @@ export default function AppNotice() {
   const [page, setPage] = useState(0);
 
   async function getData(page){
-    const data = await axios.get(`http://localhost:8000/api/reservation-call?page=${page}&size=5&future=true`, {
+    const data = await axios.get(`http://192.168.45.128:8000/api/reservation-call?page=${page}&size=5&future=true`, {
       headers : {
         Authorization : `Bearer ${localStorage.getItem('access_token')}`
       }

@@ -46,7 +46,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const [employeePosition, setEmployeePosition] = useState('');
 
   async function getEmployee(){
-    const data = await axios.get(`http://localhost:8000/api/employee/${localStorage.getItem('identifier')}`, {
+    const data = await axios.get(`http://192.168.45.128:8000/api/employee/${localStorage.getItem('identifier')}`, {
       headers : {
         Authorization : `Bearer ${localStorage.getItem('access_token')}`
       }

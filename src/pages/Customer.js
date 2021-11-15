@@ -45,7 +45,7 @@ export default function Customer () {
   const [purchasingManagers, setPurchasingManagers] = useState([]);
 
   async function getCustomer(customerId){
-    const data = axios.get(`http://localhost:8000/api/customer/${customerId}`,{
+    const data = axios.get(`http://192.168.45.128:8000/api/customer/${customerId}`,{
       headers : {
         Authorization : `Bearer ${localStorage.getItem('access_token')}`
       }
@@ -100,7 +100,7 @@ export default function Customer () {
   }
 
   function saveSalesHistory(salesHistory){
-    axios.post(`http://localhost:8000/api/sales-history`, salesHistory, {
+    axios.post(`http://192.168.45.128:8000/api/sales-history`, salesHistory, {
       headers : {
           Authorization : `Bearer ${localStorage.getItem('access_token')}`
       }

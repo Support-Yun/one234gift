@@ -18,7 +18,7 @@ export default function CustomerList({onClick, searchDTO}){
     const [next, setNext] = useState(false);
     
     async function getCustomers(nowPage){
-        const data = await axios.get(`http://localhost:8000/api/customer`,{
+        const data = await axios.get(`http://192.168.45.128:8000/api/customer`,{
             params : {
                 page : nowPage,
                 size : 10,
