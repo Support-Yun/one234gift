@@ -1,60 +1,105 @@
+import axios from 'axios';
+
 import { Card, CardHeader, CardContent, Stack, IconButton } from '@mui/material';
 import { height, styled } from '@mui/system';
 import { useEffect, useState } from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import DataTable from '../../table/Table';
-import Label from '../../Label';
 
 const NoticeCard = styled(Card)(() => ({
   height: '100%'
 }));
 
 export default function AppNotice() {
-  const [data, setData] = useState([
-    { idx: 1, name: '국민건강보험공단부산북부지사고객지원부', when: '2021-11-03' },
-    { idx: 2, name: '한국전력공사울산지사', when: '2021-11-03' },
-    { idx: 3, name: '의정부우체국', when: '2021-11-15' },
-    { idx: 4, name: '국민건강보험공단부산북부지사고객지원부', when: '2021-11-03' },
-    { idx: 5, name: '한국전력공사울산지사', when: '2021-11-03' },
-    { idx: 6, name: '의정부우체국', when: '2021-11-15' }
-  ]);
+  const [totalData, setTotalData] = useState(0);
+  const [data, setData] = useState([]);
+  const [next, setNext] = useState(false);
+  const [prev, setPrev] = useState(false);
+  const [page, setPage] = useState(0);
 
-  const noticeTableHeader = ['번호', '고객명', '예약 날짜'];
+  async function getData(page){
+    const data = await axios.get(`http://localhost:8000/api/reservation-call?page=${page}&size=5&future=true`, {
+      headers : {
+        Authorization : `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+    return data;
+  }
+  
+  const handlePrev = () => {
+    setPage(page - 1);
+  }
+
+  const handleNext = () => {
+    setPage(page + 1);
+  }
 
   useEffect(() => {
-    const contents = [];
-    data.map((data, idx) => {
-      contents.push({
-        idx: data.idx,
-        name: data.name,
-        // when: data.when,
-        when: (
-          <Label variant="ghost" color="success">
-            {data.when}
-          </Label>
-        ),
-        onClick: (i) => alert(i),
-        hover: () => alert('호버 ?')
-      });
-      return null;
+    getData(page).then(({data})=>{
+      setPrev(data.prev);
+      setNext(data.next);
+      setTotalData(data.totalElement);
+      setData(data.reservationCallModels)
     });
-    setData(contents);
-  }, []);
+  }, [page]);
 
   return (
     <NoticeCard>
-      <CardHeader title="예약콜 목록" />
+      <CardHeader title={`금일 예약콜 목록[${totalData}]`} />
       <CardContent>
-        <DataTable header={noticeTableHeader} data={data} ignoreKey={['onClick', 'hover']} />
+      <TableContainer component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">고객명</TableCell>
+                <TableCell align="center">예약 일자</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody> 
+              {
+                data.map(reservationCall=>(
+                  <TableRow hover key={reservationCall.salesHistoryId}>
+                    <TableCell align="center">{reservationCall.customer.category + reservationCall.customer.name}</TableCell>
+                    <TableCell align="center">{reservationCall.when}</TableCell>
+                  </TableRow>
+                ))
+              }
+            </TableBody>
+          </Table>
+        </TableContainer>
         <br />
         <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
-          <IconButton aria-label="perveBtn">
-            <KeyboardArrowLeftIcon />
-          </IconButton>
-          <IconButton aria-label="nextBtn">
-            <KeyboardArrowRightIcon />
-          </IconButton>
+          {
+            prev ? (
+              <IconButton aria-label="perveBtn" onClick={handlePrev}>
+                <KeyboardArrowLeftIcon />
+              </IconButton>
+            ) :
+            (
+              <IconButton aria-label="perveBtn" disabled>
+                <KeyboardArrowLeftIcon />
+              </IconButton>
+            )
+          }
+          {
+            next ? (
+              <IconButton aria-label="nextBtn" onClick={handleNext}>
+                <KeyboardArrowRightIcon />
+              </IconButton>
+            ) :
+            (
+              <IconButton aria-label="nextBtn" disabled>
+                <KeyboardArrowRightIcon />
+              </IconButton>
+            )
+          }
         </Stack>
       </CardContent>
     </NoticeCard>

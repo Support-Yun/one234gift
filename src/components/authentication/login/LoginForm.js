@@ -66,7 +66,7 @@ export default function LoginForm() {
       grant_type : 'password'
     }
 
-    axios.post('http://localhost:8000/oauth/token', null, {
+    axios.post('./oauth/token', null, {
       params : loginInfo,
       auth: {
         username: 'one234gift',
