@@ -3,155 +3,96 @@ import {
   Grid,
   Card,
   CardContent,
-  Stack,
-  Button,
-  Paper,
-  Switch,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
   Divider,
-  ListItem,
-  ListItemText,
-  CardHeader
+  Button,
+  CardHeader,
+  Stack
 } from '@mui/material';
-import { styled } from '@mui/system';
-import { memo, useEffect, useState } from 'react';
-import CustomDataTable from '../components/table/Table_';
-import CustomerInfoTable from '../components/table/CustomerInfoTable';
+import * as Yup from 'yup';
+
+import { useEffect, useState } from 'react';
+import { useFormik, Form, FormikProvider } from 'formik';
+import CustomerInfoInputTable from '../components/table/CustomerInfoInputTable';
 import Page from '../components/Page';
-import DataTable from '../components/table/Table';
 
 export default function AddCustomer() {
-  const label = { inputProps: { 'aria-label': 'Switch demo' } };
-  const [location, setLocation] = useState();
-  const [category, setCategory] = useState();
+  const LoginSchema = Yup.object().shape({
+    category: Yup.string().required('카테고리를 선택해주세요'),
+    location: Yup.string().required('지역을 선택해주세요'),
+    address: Yup.string().required('상세주소를 입력해주세요'),
+    customerName: Yup.string().required('고객명을 입력해주세요'),
+    businessNumber: Yup.string().required('사업자번호를 입력해주세요'),
+    mainCall: Yup.string().required('대표전화를 입력해주세요'),
+    buyerName: Yup.string().required('구매담당자의 이름을 입력해주세요'),
+    buyerSpot: Yup.string().required('구매담당자의 직위를 입력해주세요'),
+    buyerCall1: Yup.string().required('구매담당자의 전화번호를 입력해주세요'),
+    buyerCall2: Yup.string().required('구매담당자의 전화번호2를 입력해주세요'),
+    buyerEmail: Yup.string().required('구매담당자의 이메일을 입력해주세요')
+  });
 
-  const locationHandleChange = (event) => {
-    setLocation(event.target.value);
-  };
+  const categoryData = [
+    '우체국',
+    '은행',
+    '한국전력공사',
+    '국민건강보험공단',
+    '근로복지공단',
+    '행정복지센터',
+    '보건소',
+    '농산물품질관리원',
+    '새마을금고',
+    '산업인력공단',
+    '농협',
+    '교도소',
+    '국민연금공단'
+  ];
+  const locationData = [
+    '경기도',
+    '강원도',
+    '충청도',
+    '경상도',
+    '전라도',
+    '서울시',
+    '인천시',
+    '기타'
+  ];
 
-  const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary
-  }));
-  const [memoData, setMemoData] = useState([
-    {
-      idx: 1,
-      date: '21-03-06',
-      writer: '윤지원',
-      memo: '네, 가능합니다. 예전파일 재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지 > 재주문관리  메뉴에서 주문하셨던 기간 설정하신 후 재주문 하시기 바랍니다.'
+  const formik = useFormik({
+    initialValues: {
+      category: '',
+      location: '',
+      address: '',
+      customerName: '',
+      businessNumber: '',
+      mainCall: '',
+      buyerName: '',
+      buyerSpot: '',
+      buyerCall1: '',
+      buyerCall2: '',
+      buyerEmail: ''
     },
-    {
-      idx: 2,
-      date: '21-03-06',
-      writer: '윤지원',
-      memo: '네, 가능합니다.'
-    },
-    {
-      idx: 3,
-      date: '21-03-06',
-      writer: '민빌런',
-      memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
-    },
-    {
-      idx: 4,
-      date: '21-03-06',
-      writer: '민빌런',
-      memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
-    },
-    {
-      idx: 5,
-      date: '21-03-06',
-      writer: '민빌런',
-      memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
+    validationSchema: LoginSchema,
+    onSubmit: () => {
+      // handleLogin((data)=>{
+      //   setTokens(data);
+      //   navigate('/dashboard', { replace: true });
+      // },
+      // (msg)=>{
+      //   if(msg.error_description === '자격 증명에 실패하였습니다.'){
+      //     alert('전화번호 혹은 비밀번호를 다시 확인해주세요.');
+      //     setSubmitting(false);
+      //   }
+      // });
+      alert();
     }
-  ]);
-
-  const [data, setData] = useState([
-    {
-      idx: 1,
-      name: '국민건강보험공단부산북부지사고객지원부',
-      state: '사용',
-      location: '서울시',
-      category: '국민건강보험공단'
-    },
-    {
-      idx: 2,
-      name: '한국전력공사울산지사',
-      state: '사용',
-      location: '서울시',
-      category: '한국전력공사'
-    },
-    {
-      idx: 3,
-      name: '의정부우체국',
-      state: '미사용',
-      location: '서울시',
-      category: '우체국'
-    },
-    {
-      idx: 4,
-      name: '국민건강보험공단부산북부지사고객지원부',
-      state: '미사용',
-      location: '서울시',
-      category: '국민건강보험공단'
-    }
-  ]);
-
-  const handleChange = (event) => {
-    setCategory(event.target.value);
-  };
-
-  function memoSummary(memo) {
-    const LENGTH = 10;
-    if (memo.length > LENGTH) {
-      return memo.substr(0, LENGTH).concat('...');
-    }
-    return memo;
-  }
-
-  useEffect(() => {
-    const contents = [];
-    data.map((data) => {
-      contents.push({
-        idx: data.idx,
-        name: data.name,
-        state: data.state,
-        location: data.location,
-        category: data.category,
-        onClick: (idx) => {
-          alert(data.idx);
-        }
-      });
-      return null;
-    });
-    setData(contents);
-  }, []);
-
-  useEffect(() => {
-    const contents = [];
-    memoData.map((data) => {
-      contents.push({
-        idx: data.idx,
-        date: data.date,
-        writer: data.writer,
-        memo: memoSummary(data.memo),
-        onClick: (idx) => {
-          alert(data.idx);
-        }
-      });
-      return null;
-    });
-    setMemoData(contents);
-  }, []);
+  });
+  const { errors, touched, isSubmitting, setSubmitting, handleSubmit, getFieldProps, handleReset } = formik;
 
   return (
-    <>
+    <FormikProvider value={formik}>
       <Page title="Dashboard | Minimal-UI">
         <Container maxWidth="xl">
           <Grid container spacing={2}>
@@ -164,23 +105,21 @@ export default function AddCustomer() {
                     <Divider />
                     <CardHeader title="업체 정보" />
                     <CardContent>
-                      <CustomerInfoTable
-                        info={['*분류', '*고객명', '*지역', '대표전화']}
+                      <CustomerInfoInputTable
+                        info={['*분류', '*고객명', '*지역', '대표전화', '사업자번호', '상세주소']}
                         info0={
                           <FormControl variant="standard" fullWidth sx={{ m: 1, minWidth: 120 }}>
                             <Select
-                              labelId="demo-simple-select-standard-label"
-                              id="demo-simple-select-standard"
-                              value={category}
-                              onChange={handleChange}
+                              labelId="demo-simple-select-standard-label-1"
+                              id="demo-simple-select-standard-1"
+                              {...getFieldProps('category')}
                               label="Age"
                             >
-                              <MenuItem value="">
-                                <em>None</em>
-                              </MenuItem>
-                              <MenuItem value={10}>Ten</MenuItem>
-                              <MenuItem value={20}>Twenty</MenuItem>
-                              <MenuItem value={30}>Thirty</MenuItem>
+                              {categoryData.map((data, idx) => (
+                                <MenuItem key={idx} value={data}>
+                                  {data}
+                                </MenuItem>
+                              ))}
                             </Select>
                           </FormControl>
                         }
@@ -190,24 +129,23 @@ export default function AddCustomer() {
                             label=""
                             variant="standard"
                             size="small"
+                            {...getFieldProps('customerName')}
                             fullWidth
                           />
                         }
                         info2={
                           <FormControl variant="standard" fullWidth sx={{ m: 1, minWidth: 120 }}>
                             <Select
-                              labelId="demo-simple-select-standard-label"
-                              id="demo-simple-select-standard"
-                              value={category}
-                              onChange={handleChange}
+                              labelId="demo-simple-select-standard-label-2"
+                              id="demo-simple-select-standard-2"
+                              {...getFieldProps('location')}
                               label="Age"
                             >
-                              <MenuItem value="">
-                                <em>None</em>
-                              </MenuItem>
-                              <MenuItem value={10}>Ten</MenuItem>
-                              <MenuItem value={20}>Twenty</MenuItem>
-                              <MenuItem value={30}>Thirty</MenuItem>
+                              {locationData.map((data, idx) => (
+                                <MenuItem key={idx} value={data}>
+                                  {data}
+                                </MenuItem>
+                              ))}
                             </Select>
                           </FormControl>
                         }
@@ -217,6 +155,27 @@ export default function AddCustomer() {
                             label=""
                             variant="standard"
                             size="small"
+                            fullWidth
+                            {...getFieldProps('mainCall')}
+                          />
+                        }
+                        info4={
+                          <TextField
+                            id="standard-basic"
+                            label=""
+                            variant="standard"
+                            size="small"
+                            {...getFieldProps('businessNumber')}
+                            fullWidth
+                          />
+                        }
+                        info5={
+                          <TextField
+                            id="standard-basic"
+                            label=""
+                            variant="standard"
+                            size="small"
+                            {...getFieldProps('address')}
                             fullWidth
                           />
                         }
@@ -229,8 +188,8 @@ export default function AddCustomer() {
                   <Card>
                     <CardHeader title="구매 담당자 정보" />
                     <CardContent>
-                      <CustomerInfoTable
-                        info={['구매담당자', '직위', '전화', 'e-mail']}
+                      <CustomerInfoInputTable
+                        info={['구매담당자', '직위', '연락처', '기타연락처', '이메일', '']}
                         info0={
                           <TextField
                             id="standard-basic"
@@ -238,6 +197,7 @@ export default function AddCustomer() {
                             variant="standard"
                             size="small"
                             fullWidth
+                            {...getFieldProps('buyerName')}
                           />
                         }
                         info1={
@@ -246,6 +206,7 @@ export default function AddCustomer() {
                             label=""
                             variant="standard"
                             size="small"
+                            {...getFieldProps('buyerSpot')}
                             fullWidth
                           />
                         }
@@ -255,6 +216,7 @@ export default function AddCustomer() {
                             label=""
                             variant="standard"
                             size="small"
+                            {...getFieldProps('buyerCall1')}
                             fullWidth
                           />
                         }
@@ -264,19 +226,41 @@ export default function AddCustomer() {
                             label=""
                             variant="standard"
                             size="small"
+                            {...getFieldProps('buyerCall2')}
                             fullWidth
                           />
                         }
+                        info4={
+                          <TextField
+                            id="standard-basic"
+                            label=""
+                            variant="standard"
+                            size="small"
+                            {...getFieldProps('buyerEmail')}
+                            fullWidth
+                          />
+                        }
+                        info5=""
                         minW={650}
                       />
                     </CardContent>
                   </Card>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} style={{ marginTop: '30px' }}>
+                  <Stack direction="row" justifyContent="center" spacing={2}>
+                    <Button variant="contained" size="large" color="error" sx={{ width: '200px' }} onClick={handleReset}>
+                      초기화
+                    </Button>
+                    <Button variant="contained" size="large" sx={{ width: '200px' }}>
+                      등록
+                    </Button>
+                  </Stack>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Container>
       </Page>
-    </>
+    </FormikProvider>
   );
 }
