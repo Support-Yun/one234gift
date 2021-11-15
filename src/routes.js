@@ -3,7 +3,6 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
-import Customer from './pages/Customer';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
@@ -13,7 +12,7 @@ import User from './pages/User';
 import NotFound from './pages/Page404';
 import Orders from './pages/Orders';
 import AddOrder from './pages/AddOrder';
-import NewCustomer from './pages/Customer_';
+import Customer from './pages/Customer';
 import AddCustomer from './pages/AddCustomer';
 
 // ----------------------------------------------------------------------
@@ -26,13 +25,12 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
-        { path: 'customer', element: <Customer /> },
         { path: 'user', element: <User /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
         { path: 'orders', element: <Orders /> },
         { path: 'AddOrder', element:<AddOrder/>},
-        { path: 'newCustomer', element:<NewCustomer/> },
+        { path: 'customer', element:<Customer/> },
         { path: 'addCustomer', element:<AddCustomer/> }
       ]
     },
