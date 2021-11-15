@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import {
   Container,
   Grid,
@@ -13,137 +15,104 @@ import {
   Select,
   TextField,
   Divider,
-  ListItem,
-  ListItemText
+  FormControlLabel,
+  Checkbox,
+  FormGroup
 } from '@mui/material';
-import { styled } from '@mui/system';
-import { memo, useEffect, useState } from 'react';
-import CustomDataTable from '../components/table/Table_';
+
+import { useEffect, useState, useRef } from 'react';
 import CustomerInfoTable from '../components/table/CustomerInfoTable';
 import Page from '../components/Page';
-import DataTable from '../components/table/Table';
+import CustomerList from '../components/_dashboard/customer/CustomerList';
+import SalesHistoryList from '../components/_dashboard/customer/SalesHistoryList';
 
-export default function Customer() {
+export default function Customer () {
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
-  const [location, setLocation] = useState();
-  const [category, setCategory] = useState();
+  
+  const searchText = useRef();
+  const [searchLocation,setSearchLocation] = useState('선택');
+  const [searchCategory,setSearchCategory] = useState('선택');
+  const callReservationDate = useRef();
+  const salesHistoryContent = useRef();
 
-  const locationHandleChange = (event) => {
-    setLocation(event.target.value);
-  };
+  const [reactivity, setReactivity] = useState("THREE");
+  const [sample,setSample] = useState(false);
+  const [catalogue,setCatalogue] = useState(false);
 
-  const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary
-  }));
-  const [memoData, setMemoData] = useState([
-    {
-      idx: 1,
-      date:'21-03-06',
-      writer: '윤지원',
-      memo: '네, 가능합니다. 예전파일 재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지 > 재주문관리  메뉴에서 주문하셨던 기간 설정하신 후 재주문 하시기 바랍니다.'
-    },
-    {
-      idx: 2,
-      date:'21-03-06',
-      writer: '윤지원',
-      memo: '네, 가능합니다.'
-    },
-    {
-      idx: 3,
-      date:'21-03-06',
-      writer: '민빌런',
-      memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
-    },
-    {
-      idx: 4,
-      date:'21-03-06',
-      writer: '민빌런',
-      memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
-    },
-    {
-      idx: 5,
-      date:'21-03-06',
-      writer: '민빌런',
-      memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
+  const [customer, setCustomer] = useState({});
+
+  const [searchDTO, setSearchDTO] = useState({});
+  const [purchasingManagers, setPurchasingManagers] = useState([]);
+
+  async function getCustomer(customerId){
+    const data = axios.get(`http://localhost:8000/api/customer/${customerId}`,{
+      headers : {
+        Authorization : `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+    return data;
+  }
+
+  function handleCustomerListOnClick(customerId){
+    getCustomer(customerId).then(({data})=>{
+      setPurchasingManagers(data.purchasingManagers);
+      setCustomer(data);
+    });
+  }
+
+  function handleSearchBtnOnClick(){
+    const search = {};
+    if(searchText.current.value.trim() !== ''){
+      search.businessName = searchText.current.value.trim();
     }
-  ]);
-
-  const [data, setData] = useState([
-    {
-      idx: 1,
-      name: '국민건강보험공단부산북부지사고객지원부',
-      state: '사용',
-      location: '서울시',
-      category: '국민건강보험공단'
-    },
-    {
-      idx: 2,
-      name: '한국전력공사울산지사',
-      state: '사용',
-      location: '서울시',
-      category: '한국전력공사'
-    },
-    {
-      idx: 3,
-      name: '의정부우체국',
-      state: '미사용',
-      location: '서울시',
-      category: '우체국'
-    },
-    {
-      idx: 4,
-      name: '국민건강보험공단부산북부지사고객지원부',
-      state: '미사용',
-      location: '서울시',
-      category: '국민건강보험공단'
+    if(searchLocation !== '선택'){
+      search.location = searchLocation;
     }
-  ]);
-
-  function memoSummary(memo) {
-    const LENGTH = 10;
-    if (memo.length > LENGTH) {
-      return memo.substr(0, LENGTH).concat('...');
+    if(searchCategory !== '선택'){
+      search.category = searchCategory;
     }
-    return memo;
+    setSearchDTO(search);
+  }
+
+  function handleInitSearchBtnOnClick(){
+    searchText.current.value = "";
+    setSearchCategory('선택');
+    setSearchLocation('선택');
+  }
+
+  function handleSalesHistoryWriteBtnOnClick(){
+    const _sample = sample;
+    const _catalogue = catalogue;
+    const _reactivity = reactivity;
+
+    const salesHistory = {
+        customerId : customer.id,
+        sample : _sample,
+        catalogue : _catalogue,
+        content : salesHistoryContent.current.value.trim(),
+        reactivity : _reactivity,
+    }
+    if(callReservationDate.current.value !== ''){
+      salesHistory.callReservationDate = callReservationDate.current.value;
+    }
+
+    saveSalesHistory(salesHistory);
+  }
+
+  function saveSalesHistory(salesHistory){
+    axios.post(`http://localhost:8000/api/sales-history`, salesHistory, {
+      headers : {
+          Authorization : `Bearer ${localStorage.getItem('access_token')}`
+      }
+    }).then(({data})=>{
+      alert('영업 기록이 정상적으로 등록되었습니다.');
+    }).catch(({response}) =>{
+      alert(response.data[0]);
+  });
   }
 
   useEffect(() => {
-    const contents = [];
-    data.map((data) => {
-      contents.push({
-        idx: data.idx,
-        name: data.name,
-        state: data.state,
-        location: data.location,
-        category: data.category,
-        onClick: (idx) => {
-          alert(data.idx);
-        }
-      });
-      return null;
-    });
-    setData(contents);
-  }, []);
-
-  useEffect(() => {
-    const contents = [];
-    memoData.map((data) => {
-      contents.push({
-        idx: data.idx,
-        date: data.date,
-        writer: data.writer,
-        memo: memoSummary(data.memo),
-        onClick: (idx) => {
-          alert(data.idx);
-        }
-      });
-      return null;
-    });
-    setMemoData(contents);
-  }, []);
+  }, [customer]);
 
   return (
     <>
@@ -161,41 +130,40 @@ export default function Customer() {
                       </Stack>
                       <Stack direction="row" spacing={3}>
                         <FormControl variant="standard" sx={{ m: 1, minWidth: 200, margin: '0' }}>
-                          <TextField id="standard-basic" label="고객명" variant="standard" />
+                          <TextField id="standard-basic" label="고객명" variant="standard" inputRef={searchText}/>
                         </FormControl>
                         <FormControl variant="standard" sx={{ m: 1, minWidth: 200, margin: '0' }}>
-                          <InputLabel id="demo-simple-select-label">지역</InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={location}
-                            label="location"
-                            onChange={locationHandleChange}
-                          >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                          <InputLabel>지역</InputLabel>
+                          <Select value={searchLocation} onChange={(({target})=>setSearchLocation(target.value))}>
+                            <MenuItem value="선택">선택</MenuItem>
+                            <MenuItem value="서울특별시">서울특별시</MenuItem>
+                            <MenuItem value="경기도">경기도</MenuItem>
+                            <MenuItem value="강원도">강원도</MenuItem>
+                            <MenuItem value="충청남도">충청남도</MenuItem>
+                            <MenuItem value="충청북도">충청북도</MenuItem>
+                            <MenuItem value="전라남도">전라남도</MenuItem>
+                            <MenuItem value="전라북도">전라북도</MenuItem>
+                            <MenuItem value="경상남도">경상남도</MenuItem>
+                            <MenuItem value="경상북도">경상북도</MenuItem>
                           </Select>
                         </FormControl>
                         <FormControl variant="standard" sx={{ m: 1, minWidth: 200, margin: '0' }}>
-                          <InputLabel id="demo-simple-select-label">분류</InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={category}
-                            label="category"
-                            onChange={locationHandleChange}
-                          >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                          <InputLabel>분류</InputLabel>
+                          <Select value={searchCategory} onChange={(({target})=>setSearchCategory(target.value))}>
+                            <MenuItem value="선택">선택</MenuItem>
+                            <MenuItem value="우리은행">우리은행</MenuItem>
+                            <MenuItem value="수협">수협</MenuItem>
+                            <MenuItem value="농협">농협</MenuItem>
+                            <MenuItem value="우체국">우체국</MenuItem>
+                            <MenuItem value="국민건강보험공단">국민건강보험공단</MenuItem>
+                            <MenuItem value="근로복지공단">근로복지공단</MenuItem>
                           </Select>
                         </FormControl>
                       </Stack>
                     </Stack>
                     <Stack direction="row" spacing={1}>
-                      <Button variant="contained">찾기</Button>
-                      <Button variant="contained" color="error">
+                      <Button variant="contained" onClick={()=>handleSearchBtnOnClick()}>찾기</Button>
+                      <Button variant="contained" color="error" onClick={()=>handleInitSearchBtnOnClick()}>
                         지우기
                       </Button>
                     </Stack>
@@ -206,11 +174,7 @@ export default function Customer() {
             <Grid item xs={12} sm={12} md={4}>
               <Card style={{ minHeight: '680px' }}>
                 <CardContent>
-                  <CustomDataTable
-                    data={data}
-                    size="small"
-                    ignoreKey={['location', 'category', 'state']}
-                  />
+                  <CustomerList searchDTO={searchDTO} onClick={(customerId)=>handleCustomerListOnClick(customerId)}/>
                 </CardContent>
               </Card>
             </Grid>
@@ -220,12 +184,11 @@ export default function Customer() {
                   <Card>
                     <CardContent>
                       <CustomerInfoTable
-                        info={['고객명', '대표전화', 'FAX', '영업담당자']}
-                        info0="국민건강보험공단의정부지사"
-                        info1="010-321-3213"
-                        info2="032-342-4141"
-                        info03="user1"
-                        minW={650}
+                        info={['고객명', '사업자 번호', 'FAX', '영업담당자']}
+                        info0={customer && customer.businessInfo ? `${customer.businessInfo.name} ${customer.saleState === 'SALE' ? "[영업중]" : "[영업중지]"}` : ""}
+                        info1={customer && customer.businessInfo ? customer.businessInfo.number : ""}
+                        info2={customer ? customer.fax : ""}
+                        info03={customer ? "" : ""}
                       />
                     </CardContent>
                   </Card>
@@ -233,67 +196,76 @@ export default function Customer() {
                 <Grid item xs={12} sm={12} md={12}>
                   <Card>
                     <CardContent>
-                      <CustomerInfoTable
-                        info={['구매담당자', '직위', '전화', 'e-mail']}
-                        info0="정혜영"
-                        info1="과장"
-                        info2="032-342-4141"
-                        info3="asdf24@hanmail.com"
-                        minW={650}
-                      />
+                      {purchasingManagers.map((purchasingManager)=>(
+                        <CustomerInfoTable
+                          info={['구매담당자', '직위', '전화', 'e-mail']}
+                          info0={purchasingManager.name}
+                          info1={purchasingManager.jobTitle ? purchasingManager.jobTitle : ""}
+                          info2={purchasingManager.contact.mainTel}
+                          info3={purchasingManager.email ? purchasingManager.email : ""}
+                        />
+                      ))}
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={5}>
                   <Card>
                     <CardContent>
                       <Stack direction="column" spacing={3}>
                         <Stack
                           direction="row"
-                          alignItems="center"
                           divider={<Divider orientation="vertical" flexItem />}
                           spacing={2}
                         >
-                          <Item>
-                            <ListItemText primary="작성자" secondary="윤지원" />
-                          </Item>
-                          <Item>
-                            <ListItemText primary="날짜" secondary="21-11-15" />
-                          </Item>
-                          <Item>
-                            <ListItemText primary="예약콜" secondary="-" />
-                          </Item>
-                          <Stack alignItems="flex-end">
-                            <Stack direction="row" alignItems="center">
-                              <p>샘플</p>
-                              <Switch {...label} />
-                            </Stack>
-                            <Stack direction="row" alignItems="center">
-                              <p>카탈로그</p>
-                              <Switch {...label} />
-                            </Stack>
-                          </Stack>
+                          <TextField
+                            inputRef={callReservationDate}
+                            fullWidth
+                            id="date"
+                            label="예약콜 설정"
+                            type="date"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          />
                         </Stack>
+                        <FormGroup>
+                          <FormControlLabel control={<Checkbox checked={sample} onChange={()=>setSample(!sample)}/>} label="샘플 제공 여부" />
+                          <FormControlLabel control={<Checkbox checked={catalogue} onChange={()=>setCatalogue(!catalogue)}/>} label="카탈로그 제공 여부" />
+                        </FormGroup>
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-simple-select-label">반응도</InputLabel>
+                          <Select
+                            label="반응도"
+                            value={reactivity}
+                            onChange={({target})=>setReactivity(target.value)}
+                          >
+                            <MenuItem value="ONE">매우 나쁨</MenuItem>
+                            <MenuItem value="TWO">나쁨</MenuItem>
+                            <MenuItem value="THREE">보통</MenuItem>
+                            <MenuItem value="FOUR">좋음</MenuItem>
+                            <MenuItem value="FIVE">매우 좋음</MenuItem>
+                          </Select>
+                        </FormControl>
                         <TextField
-                          id="outlined-multiline-static"
-                          label="메모작성"
+                          inputRef={salesHistoryContent}
+                          label="영업 기록 메모"
                           multiline
-                          fullWidth
-                          rows={3}
-                          defaultValue="Default Value"
+                          rows={5}
                         />
-                        <div
-                          style={{ height: '140px', backgroundColor: '#ddd', overflowY: 'auto' }}
-                        >
-                          <CustomDataTable data={memoData} ignoreKey={['idx']} size="small" />
-                        </div>
+                        <Button variant="contained" onClick={()=>handleSalesHistoryWriteBtnOnClick()}>영업 기록 등록</Button>
                       </Stack>
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={7}>
                   <Card>
-                    <CardContent>주문 이력/수정이력 등등</CardContent>
+                    <CardContent>
+                      <SalesHistoryList customerId={customer.id}/>
+                    </CardContent>
+                  </Card>
+                  <br/>
+                  <Card>
+                    <CardContent>주문 이력</CardContent>
                   </Card>
                 </Grid>
               </Grid>
