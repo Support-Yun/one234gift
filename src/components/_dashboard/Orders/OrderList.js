@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
-export default function OrderList({customerId}) {
+export default function OrderList({customerId, size}) {
   const [page, setPage] = useState(0);
   const [totalElment, setTotalElement] = useState();
   const [prev, setPrev] = useState(false);
@@ -21,11 +21,15 @@ export default function OrderList({customerId}) {
   const [orders, setOrders] = useState([]);
 
   async function getOrders(nowPage){
+    if(customerId === ''){
+      return;
+    }
     const url = customerId ? `http://192.168.45.128:8000/api/order/customer/${customerId}` : `http://192.168.45.128:8000/api/order`;
+    const _size = size;
     const data = axios.get(url,{
       params :{
         page:nowPage,
-        size:10
+        size:_size
       },
       headers : {
         Authorization : `Bearer ${localStorage.getItem('access_token')}`
@@ -45,14 +49,16 @@ export default function OrderList({customerId}) {
   }
 
   useEffect(()=>{
+    if(customerId === ''){
+      return;
+    }
     getOrders(page).then(({data})=>{
       setPrev(data.prev);
       setNext(data.next);
       setOrders(data.orderModels);
       setTotalElement(data.totalElement);
-      console.log(data);
     })
-  },[page]);
+  },[page, customerId]);
 
   return (
     <Card>

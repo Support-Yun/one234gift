@@ -87,7 +87,7 @@ export default function Customer () {
     const _reactivity = reactivity;
 
     const salesHistory = {
-        customerId : customer.id,
+        customerId : customer.customerId,
         sample : _sample,
         catalogue : _catalogue,
         content : salesHistoryContent.current.value.trim(),
@@ -96,7 +96,6 @@ export default function Customer () {
     if(callReservationDate.current.value !== ''){
       salesHistory.callReservationDate = callReservationDate.current.value;
     }
-
     saveSalesHistory(salesHistory);
   }
 
@@ -109,7 +108,7 @@ export default function Customer () {
       alert('영업 기록이 정상적으로 등록되었습니다.');
     }).catch(({response}) =>{
       alert(response.data[0]);
-  });
+    });
   }
 
   useEffect(() => {
@@ -125,10 +124,6 @@ export default function Customer () {
                 <CardContent>
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
                     <Stack direction="row" alignItems="center" spacing={3}>
-                      <Stack direction="row" alignItems="center">
-                        <p>관심고객만 보기</p>
-                        <Switch {...label} defaultChecked />
-                      </Stack>
                       <Stack direction="row" spacing={3}>
                         <FormControl variant="standard" sx={{ m: 1, minWidth: 200, margin: '0' }}>
                           <TextField id="standard-basic" label="고객명" variant="standard" inputRef={searchText}/>
@@ -267,7 +262,7 @@ export default function Customer () {
                   <br/>
                   <Card>
                     <CardContent>
-                      <OrderList customerId={1}/>
+                      <OrderList size={5} customerId={customer.customerId ? customer.customerId : ""}/>
                     </CardContent>
                   </Card>
                 </Grid>

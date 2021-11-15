@@ -29,7 +29,7 @@ export default function Orders() {
             <OrdersHeader />
           </Grid>
           <Grid item xs={12} sm={12} md={12}>
-            <OrderList />
+            <OrderList size={10} />
           </Grid>
         </Grid>
       </Container>
