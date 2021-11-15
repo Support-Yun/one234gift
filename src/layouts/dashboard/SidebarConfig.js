@@ -18,52 +18,28 @@ const sidebarConfig = [
     icon: getIcon(pieChart2Fill)
   },
   {
-    title: 'user',
-    path: '/dashboard/user',
-    icon: getIcon(peopleFill)
-  },
-  {
-    title: 'product',
-    path: '/dashboard/products',
-    icon: getIcon(shoppingBagFill)
-  },
-  {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: getIcon(fileTextFill)
-  },
-  {
-    title: 'login',
+    title: '로그인(접속시)',
     path: '/login',
     icon: getIcon(lockFill)
   },
-  // {
-  //   title: 'register',
-  //   path: '/register',
-  //   icon: getIcon(personAddFill)
-  // },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: getIcon(alertTriangleFill)
-  // },
+
   {
-    title: 'Orders',
-    path: '/dashboard/orders',
-    icon: getIcon(shoppingBagFill)
-  },
-  {
-    title: 'Customer',
-    path: '/dashboard/Customer',
-    icon: getIcon(shoppingBagFill)
-  },
-  {
-    title: 'Customer_',
+    title: '고객목록',
     path: '/dashboard/newCustomer',
     icon: getIcon(shoppingBagFill)
   },
   {
-    title: 'AddOrder',
+    title: '고객등록',
+    path: '/dashboard/addCustomer',
+    icon: getIcon(shoppingBagFill)
+  },
+  {
+    title: '주문목록',
+    path: '/dashboard/orders',
+    icon: getIcon(shoppingBagFill)
+  },
+  {
+    title: '주문등록',
     path: '/dashboard/AddOrder',
     icon: getIcon(shoppingBagFill)
   }

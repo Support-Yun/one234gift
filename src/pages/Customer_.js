@@ -41,16 +41,31 @@ export default function NewCustomer_() {
   const [memoData, setMemoData] = useState([
     {
       idx: 1,
+      date:'21-03-06',
       writer: '윤지원',
       memo: '네, 가능합니다. 예전파일 재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지 > 재주문관리  메뉴에서 주문하셨던 기간 설정하신 후 재주문 하시기 바랍니다.'
     },
     {
       idx: 2,
+      date:'21-03-06',
       writer: '윤지원',
       memo: '네, 가능합니다.'
     },
     {
-      idx: 2,
+      idx: 3,
+      date:'21-03-06',
+      writer: '민빌런',
+      memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
+    },
+    {
+      idx: 4,
+      date:'21-03-06',
+      writer: '민빌런',
+      memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
+    },
+    {
+      idx: 5,
+      date:'21-03-06',
       writer: '민빌런',
       memo: '재주문과 주문옵션변경 재주문 또한 가능합니다. 마이페이지.'
     }
@@ -88,7 +103,7 @@ export default function NewCustomer_() {
   ]);
 
   function memoSummary(memo) {
-    const LENGTH = 20;
+    const LENGTH = 10;
     if (memo.length > LENGTH) {
       return memo.substr(0, LENGTH).concat('...');
     }
@@ -118,6 +133,7 @@ export default function NewCustomer_() {
     memoData.map((data) => {
       contents.push({
         idx: data.idx,
+        date: data.date,
         writer: data.writer,
         memo: memoSummary(data.memo),
         onClick: (idx) => {
@@ -266,7 +282,9 @@ export default function NewCustomer_() {
                           rows={3}
                           defaultValue="Default Value"
                         />
-                        <div style={{height:'300px', backgroundColor:'#ddd', }}>
+                        <div
+                          style={{ height: '140px', backgroundColor: '#ddd', overflowY: 'auto' }}
+                        >
                           <CustomDataTable data={memoData} ignoreKey={['idx']} size="small" />
                         </div>
                       </Stack>

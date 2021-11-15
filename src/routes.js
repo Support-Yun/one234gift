@@ -14,6 +14,7 @@ import NotFound from './pages/Page404';
 import Orders from './pages/Orders';
 import AddOrder from './pages/AddOrder';
 import NewCustomer from './pages/Customer_';
+import AddCustomer from './pages/AddCustomer';
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +32,8 @@ export default function Router() {
         { path: 'blog', element: <Blog /> },
         { path: 'orders', element: <Orders /> },
         { path: 'AddOrder', element:<AddOrder/>},
-        { path: 'newCustomer', element:<NewCustomer/> }
+        { path: 'newCustomer', element:<NewCustomer/> },
+        { path: 'addCustomer', element:<AddCustomer/> }
       ]
     },
     {
