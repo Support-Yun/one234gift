@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 import { useEffect, useState } from 'react';
 
 export default function CustomerList({onClick, searchDTO}){
@@ -57,7 +58,7 @@ export default function CustomerList({onClick, searchDTO}){
                 </TableHead>
                 <TableBody>
                     {customers.map((customer)=>(
-                        <TableRow hover onClick={()=>onClick(customer.customerId)}>
+                        <TableRow hover onClick={()=>onClick(customer)}>
                             <TableCell align="center">{customer.businessInfo.name}[{customer.category}]</TableCell>
                             <TableCell align="center">{customer.address.location}</TableCell>
                         </TableRow> 

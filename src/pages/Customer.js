@@ -123,10 +123,6 @@ export default function Customer () {
                 <CardContent>
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
                     <Stack direction="row" alignItems="center" spacing={3}>
-                      <Stack direction="row" alignItems="center">
-                        <p>관심고객만 보기</p>
-                        <Switch {...label} defaultChecked />
-                      </Stack>
                       <Stack direction="row" spacing={3}>
                         <FormControl variant="standard" sx={{ m: 1, minWidth: 200, margin: '0' }}>
                           <TextField id="standard-basic" label="고객명" variant="standard" inputRef={searchText}/>
@@ -173,7 +169,7 @@ export default function Customer () {
             <Grid item xs={12} sm={12} md={4}>
               <Card style={{ minHeight: '680px' }}>
                 <CardContent>
-                  <CustomerList searchDTO={searchDTO} onClick={(customerId)=>handleCustomerListOnClick(customerId)}/>
+                  <CustomerList searchDTO={searchDTO} onClick={(customer)=>handleCustomerListOnClick(customer.customerId)}/>
                 </CardContent>
               </Card>
             </Grid>
