@@ -86,7 +86,7 @@ export default function Customer () {
     const _reactivity = reactivity;
 
     const salesHistory = {
-        customerId : customer.id,
+        customerId : customer.customerId,
         sample : _sample,
         catalogue : _catalogue,
         content : salesHistoryContent.current.value.trim(),
@@ -95,7 +95,6 @@ export default function Customer () {
     if(callReservationDate.current.value !== ''){
       salesHistory.callReservationDate = callReservationDate.current.value;
     }
-
     saveSalesHistory(salesHistory);
   }
 
@@ -108,7 +107,7 @@ export default function Customer () {
       alert('영업 기록이 정상적으로 등록되었습니다.');
     }).catch(({response}) =>{
       alert(response.data[0]);
-  });
+    });
   }
 
   useEffect(() => {
@@ -260,7 +259,7 @@ export default function Customer () {
                 <Grid item xs={12} sm={12} md={7}>
                   <Card>
                     <CardContent>
-                      <SalesHistoryList customerId={customer.id}/>
+                      <SalesHistoryList customerId={customer.customerId}/>
                     </CardContent>
                   </Card>
                   <br/>

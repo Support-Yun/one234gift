@@ -57,7 +57,7 @@ export default function CustomerList({onClick, searchDTO}){
                 </TableHead>
                 <TableBody>
                     {customers.map((customer)=>(
-                        <TableRow hover onClick={()=>onClick(customer.id)}>
+                        <TableRow hover onClick={()=>onClick(customer.customerId)}>
                             <TableCell align="center">{customer.businessInfo.name}[{customer.category}]</TableCell>
                             <TableCell align="center">{customer.address.location}</TableCell>
                         </TableRow> 

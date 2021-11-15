@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import {
   Container,
   Grid,
@@ -23,15 +25,10 @@ export default function AddCustomer() {
   const LoginSchema = Yup.object().shape({
     category: Yup.string().required('카테고리를 선택해주세요'),
     location: Yup.string().required('지역을 선택해주세요'),
-    address: Yup.string().required('상세주소를 입력해주세요'),
+    address: Yup.string().required('지역을 입력해주세요'),
     customerName: Yup.string().required('고객명을 입력해주세요'),
-    businessNumber: Yup.string().required('사업자번호를 입력해주세요'),
-    mainCall: Yup.string().required('대표전화를 입력해주세요'),
     buyerName: Yup.string().required('구매담당자의 이름을 입력해주세요'),
-    buyerSpot: Yup.string().required('구매담당자의 직위를 입력해주세요'),
-    buyerCall1: Yup.string().required('구매담당자의 전화번호를 입력해주세요'),
-    buyerCall2: Yup.string().required('구매담당자의 전화번호2를 입력해주세요'),
-    buyerEmail: Yup.string().required('구매담당자의 이메일을 입력해주세요')
+    buyerCall1: Yup.string().required('구매담당자의 전화번호를 입력해주세요')
   });
 
   const categoryData = [
@@ -64,31 +61,55 @@ export default function AddCustomer() {
     initialValues: {
       category: '',
       location: '',
-      address: '',
       customerName: '',
       businessNumber: '',
-      mainCall: '',
+      fax: '',
       buyerName: '',
       buyerSpot: '',
       buyerCall1: '',
       buyerCall2: '',
       buyerEmail: ''
     },
-    validationSchema: LoginSchema,
-    onSubmit: () => {
-      // handleLogin((data)=>{
-      //   setTokens(data);
-      //   navigate('/dashboard', { replace: true });
-      // },
-      // (msg)=>{
-      //   if(msg.error_description === '자격 증명에 실패하였습니다.'){
-      //     alert('전화번호 혹은 비밀번호를 다시 확인해주세요.');
-      //     setSubmitting(false);
-      //   }
-      // });
-      alert();
-    }
+    validationSchema: LoginSchema
   });
+
+  function handleSubmitButtonOnClick(){
+    const customer = {
+        "category" : formik.values.category,
+        "businessInfo" : {
+            "name": formik.values.customerName,
+            "number": formik.values.businessNumber === '' ? null : formik.values.businessNumber
+        },
+        "purchasingManagers" : [
+            {
+                "name": formik.values.buyerName,
+                "contact" : {
+                    "mainTel" : formik.values.buyerCall1,
+                    "subTel" : formik.values.buyerCall2 === '' ? null : formik.values.buyerCall2
+                } 
+            }
+        ],
+        "address" : {
+            "location" : formik.values.location
+        },
+        "fax" : formik.values.fax === '' ? null : formik.values.fax
+    };
+    saveCustomer(customer);
+  }
+
+  function saveCustomer(customer){
+    axios.post(`http://192.168.45.128:8000/api/customer`, customer, {
+      headers : {
+        Authorization : `Bearer ${localStorage.getItem('access_token')}`
+      }
+    }).then(({data})=>{
+      alert('고객이 정상적으로 등록되었습니다.');
+      handleReset();
+    }).catch(({response}) =>{
+      alert(response.data[0]);
+    });
+  }
+
   const { errors, touched, isSubmitting, setSubmitting, handleSubmit, getFieldProps, handleReset } = formik;
 
   return (
@@ -106,7 +127,7 @@ export default function AddCustomer() {
                     <CardHeader title="업체 정보" />
                     <CardContent>
                       <CustomerInfoInputTable
-                        info={['*분류', '*고객명', '*지역', '대표전화', '사업자번호', '상세주소']}
+                        info={['*분류', '*고객명', '*지역', '팩스', '사업자번호']}
                         info0={
                           <FormControl variant="standard" fullWidth sx={{ m: 1, minWidth: 120 }}>
                             <Select
@@ -156,7 +177,7 @@ export default function AddCustomer() {
                             variant="standard"
                             size="small"
                             fullWidth
-                            {...getFieldProps('mainCall')}
+                            {...getFieldProps('fax')}
                           />
                         }
                         info4={
@@ -166,16 +187,6 @@ export default function AddCustomer() {
                             variant="standard"
                             size="small"
                             {...getFieldProps('businessNumber')}
-                            fullWidth
-                          />
-                        }
-                        info5={
-                          <TextField
-                            id="standard-basic"
-                            label=""
-                            variant="standard"
-                            size="small"
-                            {...getFieldProps('address')}
                             fullWidth
                           />
                         }
@@ -251,7 +262,7 @@ export default function AddCustomer() {
                     <Button variant="contained" size="large" color="error" sx={{ width: '200px' }} onClick={handleReset}>
                       초기화
                     </Button>
-                    <Button variant="contained" size="large" sx={{ width: '200px' }}>
+                    <Button variant="contained" size="large" sx={{ width: '200px' }} onClick={()=>handleSubmitButtonOnClick()}>
                       등록
                     </Button>
                   </Stack>
