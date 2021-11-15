@@ -42,17 +42,10 @@ const ContentStyle = styled('div')(({ theme }) => ({
 export default function Login() {
   return (
     <RootStyle title="Login | Minimal-UI">
-      <AuthLayout>
-        Don’t have an account? &nbsp;
-        <Link underline="none" variant="subtitle2" component={RouterLink} to="/register">
-          Get started
-        </Link>
-      </AuthLayout>
-
       <MHidden width="mdDown">
         <SectionStyle>
           <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            Hi, Welcome Back
+            일이삼사 고객 관리 시스템
           </Typography>
           <img src="/static/illustrations/illustration_login.png" alt="login" />
         </SectionStyle>
@@ -60,24 +53,7 @@ export default function Login() {
 
       <Container maxWidth="sm">
         <ContentStyle>
-          <Stack sx={{ mb: 5 }}>
-            <Typography variant="h4" gutterBottom>
-              Sign in to Minimal
-            </Typography>
-            <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
-          </Stack>
-          <AuthSocial />
-
           <LoginForm />
-
-          <MHidden width="smUp">
-            <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-              Don’t have an account?&nbsp;
-              <Link variant="subtitle2" component={RouterLink} to="register">
-                Get started
-              </Link>
-            </Typography>
-          </MHidden>
         </ContentStyle>
       </Container>
     </RootStyle>

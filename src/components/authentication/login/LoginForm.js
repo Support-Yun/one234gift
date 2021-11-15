@@ -5,15 +5,14 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
+import axios from 'axios';
+
 // material
 import {
-  Link,
   Stack,
-  Checkbox,
   TextField,
   IconButton,
   InputAdornment,
-  FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
@@ -24,27 +23,62 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required')
+    employeeId: Yup.string().required('사원의 전화번호를 입력해주세요'),
+    password: Yup.string().required('비밀번호를 입력해주세요.')
   });
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
-      remember: true
+      employeeId: '',
+      password: ''
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+      handleLogin((data)=>{
+        setTokens(data);
+        navigate('/dashboard', { replace: true });
+      },
+      (msg)=>{
+        if(msg.error_description === '자격 증명에 실패하였습니다.'){
+          alert('전화번호 혹은 비밀번호를 다시 확인해주세요.');
+          setSubmitting(false);
+        }
+      });
     }
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+  function setTokens(tokens){
+      localStorage.setItem("access_token", tokens.access_token);
+      localStorage.setItem("refresh_token", tokens.refresh_token);
+      localStorage.setItem("identifier", tokens.identifier);
+  }
+
+  const { errors, touched, isSubmitting, setSubmitting, handleSubmit, getFieldProps } = formik;
 
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
   };
+
+  const handleLogin = (success, fail) => {
+    const loginInfo ={
+      username : formik.values.employeeId.trim(),
+      password : formik.values.password.trim(),
+      grant_type : 'password'
+    }
+
+    axios.post('http://localhost:8000/oauth/token', null, {
+      params : loginInfo,
+      auth: {
+        username: 'one234gift',
+        password: '1234'
+      },
+      headers: { 'Content-type': 'application/x-www-form-urlencoded', }
+    }).then(({data})=>{
+      success(data);
+    }).catch(({response}) =>{
+        fail(response.data);
+    });
+  }
 
   return (
     <FormikProvider value={formik}>
@@ -52,19 +86,17 @@ export default function LoginForm() {
         <Stack spacing={3}>
           <TextField
             fullWidth
-            autoComplete="username"
-            type="email"
-            label="Email address"
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
+            type="text"
+            label="전화번호"
+            {...getFieldProps('employeeId')}
+            error={Boolean(touched.employeeId && errors.employeeId)}
+            helperText={touched.employeeId && errors.employeeId}
           />
 
           <TextField
             fullWidth
-            autoComplete="current-password"
             type={showPassword ? 'text' : 'password'}
-            label="Password"
+            label="비밀번호"
             {...getFieldProps('password')}
             InputProps={{
               endAdornment: (
@@ -79,18 +111,7 @@ export default function LoginForm() {
             helperText={touched.password && errors.password}
           />
         </Stack>
-
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-          <FormControlLabel
-            control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label="Remember me"
-          />
-
-          <Link component={RouterLink} variant="subtitle2" to="#">
-            Forgot password?
-          </Link>
-        </Stack>
-
+        <br/>
         <LoadingButton
           fullWidth
           size="large"
@@ -98,7 +119,7 @@ export default function LoginForm() {
           variant="contained"
           loading={isSubmitting}
         >
-          Login
+          로그인
         </LoadingButton>
       </Form>
     </FormikProvider>
