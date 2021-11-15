@@ -2,6 +2,8 @@ import { Card, CardHeader, CardContent } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import { Link } from 'react-router-dom';
+
 import {
   ContactPhone as ContactPhoneIcon,
   AddBusiness as AddBusinessIcon,
@@ -11,10 +13,10 @@ import {
 import { styled } from '@mui/system';
 
 const ItemButton = styled(Button)`
-  height:80px;
-  font-size:19px;
-  color:#4b4b4b;
-  `;
+  height: 80px;
+  font-size: 19px;
+  color: #4b4b4b;
+`;
 
 const BoxCenter = styled('div')({
   width: '100%',
@@ -31,9 +33,7 @@ const data = [
         <ContactPhoneIcon fontSize="large" />
       </Avatar>
     ),
-    onClick: (event) => {
-      alert();
-    }
+    link: '/dashboard/customer'
   },
   {
     name: '고객등록',
@@ -42,9 +42,7 @@ const data = [
         <AddBusinessIcon fontSize="large" />
       </Avatar>
     ),
-    onClick: (event) => {
-      alert();
-    }
+    link: '/dashboard/addCustomer'
   },
   {
     name: '주문목록조회',
@@ -53,9 +51,7 @@ const data = [
         <AssignmentIcon fontSize="large" />
       </Avatar>
     ),
-    onClick: (event) => {
-      alert();
-    }
+    link: '/dashboard/orders'
   },
   {
     name: '주문등록',
@@ -64,18 +60,18 @@ const data = [
         <PostAddIcon fontSize="large" />
       </Avatar>
     ),
-    onClick: (event) => {
-      alert();
-    }
+    link: '/dashboard/AddOrder'
   }
 ];
 
-function QuickMenu({ name, icon, onClick }) {
+function QuickMenu({ name, icon, onClick, link }) {
   return (
-    <ItemButton onClick={onClick} fullWidth color="inherit" variant="outlined">
-      {icon}
-      <BoxCenter>{name}</BoxCenter>
-    </ItemButton>
+    <Link to={link} style={{ width: '100%', textDecoration: 'none' }}>
+      <ItemButton onClick={onClick} fullWidth color="inherit" variant="outlined">
+        {icon}
+        <BoxCenter>{name}</BoxCenter>
+      </ItemButton>
+    </Link>
   );
 }
 
@@ -84,9 +80,15 @@ export default function AppQuickMenu() {
     <Card>
       <CardHeader title="빠른메뉴" />
       <CardContent>
-        <Stack direction="row" spacing={3}>
+        <Stack direction="row" justifyContent="space-between" spacing={3}>
           {data.map((menu, idx) => (
-            <QuickMenu key={idx} name={menu.name} icon={menu.icon} onClick={menu.onClick} />
+            <QuickMenu
+              key={idx}
+              name={menu.name}
+              icon={menu.icon}
+              onClick={menu.onClick}
+              link={menu.link}
+            />
           ))}
         </Stack>
       </CardContent>

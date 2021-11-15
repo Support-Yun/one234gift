@@ -25,6 +25,7 @@ import CustomerInfoTable from '../components/table/CustomerInfoTable';
 import Page from '../components/Page';
 import CustomerList from '../components/_dashboard/customer/CustomerList';
 import SalesHistoryList from '../components/_dashboard/customer/SalesHistoryList';
+import OrderList from '../components/_dashboard/Orders/OrderList';
 
 export default function Customer () {
   const label = { inputProps: { 'aria-label': 'Switch demo' } };
@@ -174,7 +175,7 @@ export default function Customer () {
             <Grid item xs={12} sm={12} md={4}>
               <Card style={{ minHeight: '680px' }}>
                 <CardContent>
-                  <CustomerList searchDTO={searchDTO} onClick={(customerId)=>handleCustomerListOnClick(customerId)}/>
+                  <CustomerList searchDTO={searchDTO} onClick={(customer)=>handleCustomerListOnClick(customer.customerId)}/>
                 </CardContent>
               </Card>
             </Grid>
@@ -260,12 +261,14 @@ export default function Customer () {
                 <Grid item xs={12} sm={12} md={7}>
                   <Card>
                     <CardContent>
-                      <SalesHistoryList customerId={customer.id}/>
+                      <SalesHistoryList customerId={customer.customerId}/>
                     </CardContent>
                   </Card>
                   <br/>
                   <Card>
-                    <CardContent>주문 이력</CardContent>
+                    <CardContent>
+                      <OrderList customerId={1}/>
+                    </CardContent>
                   </Card>
                 </Grid>
               </Grid>
