@@ -37,30 +37,36 @@ const sidebarConfig = [
     path: '/login',
     icon: getIcon(lockFill)
   },
+  // {
+  //   title: 'register',
+  //   path: '/register',
+  //   icon: getIcon(personAddFill)
+  // },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: getIcon(alertTriangleFill)
+  // },
   {
-    title: 'register',
-    path: '/register',
-    icon: getIcon(personAddFill)
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: getIcon(alertTriangleFill)
-  }, {
     title: 'Orders',
     path: '/dashboard/orders',
     icon: getIcon(shoppingBagFill)
-  }
-  , {
+  },
+  {
     title: 'Customer',
     path: '/dashboard/Customer',
+    icon: getIcon(shoppingBagFill)
+  },
+  {
+    title: 'Customer_',
+    path: '/dashboard/newCustomer',
     icon: getIcon(shoppingBagFill)
   },
   {
     title: 'AddOrder',
     path: '/dashboard/AddOrder',
     icon: getIcon(shoppingBagFill)
-  },
+  }
 ];
 
 export default sidebarConfig;

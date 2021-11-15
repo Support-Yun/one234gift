@@ -13,6 +13,7 @@ import User from './pages/User';
 import NotFound from './pages/Page404';
 import Orders from './pages/Orders';
 import AddOrder from './pages/AddOrder';
+import NewCustomer from './pages/Customer_';
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +30,8 @@ export default function Router() {
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
         { path: 'orders', element: <Orders /> },
-        { path: 'AddOrder', element:<AddOrder/>}
+        { path: 'AddOrder', element:<AddOrder/>},
+        { path: 'newCustomer', element:<NewCustomer/> }
       ]
     },
     {

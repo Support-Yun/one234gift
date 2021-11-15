@@ -12,15 +12,17 @@ function DataTableHead({ datas }) {
     <TableHead>
       <TableRow>
         {datas.map((data) => (
-          <TableCell align="center">{data}</TableCell>
+          <TableCell>{data}</TableCell>
         ))}
       </TableRow>
     </TableHead>
   );
 }
 
+
 function DataTableBody({ datas, hover, ignoreKey }) {
   const [selectedRow, setSelectedRow] = React.useState();
+  const unusedStyle = {backgroundColor:'hsla(0, 96%, 59%, 0.13)'};
 
   return (
     <TableBody>
@@ -36,13 +38,15 @@ function DataTableBody({ datas, hover, ignoreKey }) {
           hover={hover}
           key={idx}
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          style={data.state==="미사용"?unusedStyle:null}
+          // {data.state==="미사용"? style = {{backgroundColor:'hsla(0, 96%, 59%, 0.22)'}}}
         >
           {Object.keys(data).map((key, _idx) => {
             if (ignoreKey && ignoreKey.includes(key)) {
               return null;
             }
             return (
-              <TableCell key={_idx} align="center">
+              <TableCell key={_idx}>
                 {data[key]}
               </TableCell>
             );
@@ -53,11 +57,11 @@ function DataTableBody({ datas, hover, ignoreKey }) {
   );
 }
 
-function DataTable({ header, data, ignoreKey, size }) {
+function CustomDataTable({ header, data, ignoreKey, size }) {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{cursor:'pointer'}}>
       <Table
-        sx={{ minWidth: 650 }}
+        sx={{ minWidth: 300 }}
         aria-label="simple table"
         size={size}
       >
@@ -68,4 +72,4 @@ function DataTable({ header, data, ignoreKey, size }) {
   );
 }
 
-export default DataTable;
+export default CustomDataTable;
