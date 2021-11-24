@@ -98,7 +98,7 @@ export default function AddCustomer() {
   }
 
   function saveCustomer(customer){
-    axios.post(`http://192.168.45.128:8000/api/customer`, customer, {
+    axios.post(`http://10.202.36.105:8000/api/customer`, customer, {
       headers : {
         Authorization : `Bearer ${localStorage.getItem('access_token')}`
       }

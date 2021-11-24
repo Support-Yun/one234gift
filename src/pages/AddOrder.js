@@ -115,7 +115,7 @@ export default function AddOrder() {
     }
 
     function saveOrder(order){
-      axios.post(`http://192.168.45.128:8000/api/order`,order,{
+      axios.post(`http://10.202.36.105:8000/api/order`,order,{
         headers : {
           Authorization : `Bearer ${localStorage.getItem('access_token')}`
         }

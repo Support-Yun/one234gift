@@ -24,7 +24,7 @@ export default function OrderList({customerId, size}) {
     if(customerId === ''){
       return;
     }
-    const url = customerId ? `http://192.168.45.128:8000/api/order/customer/${customerId}` : `http://192.168.45.128:8000/api/order`;
+    const url = customerId ? `http://10.202.36.105:8000/api/order/customer/${customerId}` : `http://10.202.36.105:8000/api/order`;
     const _size = size;
     const data = axios.get(url,{
       params :{
@@ -61,8 +61,7 @@ export default function OrderList({customerId, size}) {
   },[page, customerId]);
 
   return (
-    <Card>
-      <CardContent>
+      <>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -111,7 +110,6 @@ export default function OrderList({customerId, size}) {
           </IconButton>
           )
           }
-      </CardContent>
-    </Card>
+      </>
   );
 }

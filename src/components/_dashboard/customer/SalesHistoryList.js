@@ -19,7 +19,7 @@ export default function SalesHistoryList({customerId}){
     const [salesHistoryList, setSalesHistoryList] = useState([]);
 
     async function getSalesHistorys(nowPage){
-        const data = await axios.get(`http://192.168.45.128:8000/api/sales-history/customer/${customerId}`, {
+        const data = await axios.get(`http://10.202.36.105:8000/api/sales-history/customer/${customerId}`, {
             params : {
                 page : nowPage,
                 size : 5,

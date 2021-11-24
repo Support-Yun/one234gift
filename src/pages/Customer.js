@@ -1,276 +1,193 @@
-import axios from 'axios';
-
+import {useState} from 'react';
 import {
-  Container,
   Grid,
   Card,
   CardContent,
-  Stack,
-  Button,
-  Paper,
-  Switch,
+  TextField,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
-  TextField,
-  Divider,
-  FormControlLabel,
+  InputLabel,
+  Button,
+  CardHeader,
+  ButtonGroup,
   Checkbox,
-  FormGroup
+  ListItemButton,
+  ListItemText,
+  Chip
 } from '@mui/material';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
-import { useEffect, useState, useRef } from 'react';
-import CustomerInfoTable from '../components/table/CustomerInfoTable';
-import Page from '../components/Page';
-import CustomerList from '../components/_dashboard/customer/CustomerList';
-import SalesHistoryList from '../components/_dashboard/customer/SalesHistoryList';
-import OrderList from '../components/_dashboard/Orders/OrderList';
+export default function Customer() {
+  const [searchLocationText, setSearchLocationText] = useState('');
+  const [currentSearchLocation, setCurrentSearchLocation] = useState([]);
+  function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
 
-export default function Customer () {
-  const label = { inputProps: { 'aria-label': 'Switch demo' } };
-  
-  const searchText = useRef();
-  const [searchLocation,setSearchLocation] = useState('선택');
-  const [searchCategory,setSearchCategory] = useState('선택');
-  const callReservationDate = useRef();
-  const salesHistoryContent = useRef();
+  const rows = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    createData('Eclair', 262, 16.0, 24, 6.0),
+    createData('Cupcake', 305, 3.7, 67, 4.3),
+    createData('Gingerbread', 356, 16.0, 49, 3.9)
+  ];
 
-  const [reactivity, setReactivity] = useState("THREE");
-  const [sample,setSample] = useState(false);
-  const [catalogue,setCatalogue] = useState(false);
 
-  const [customer, setCustomer] = useState({});
-
-  const [searchDTO, setSearchDTO] = useState({});
-  const [purchasingManagers, setPurchasingManagers] = useState([]);
-
-  async function getCustomer(customerId){
-    const data = axios.get(`http://192.168.45.128:8000/api/customer/${customerId}`,{
-      headers : {
-        Authorization : `Bearer ${localStorage.getItem('access_token')}`
+/**
+ * handler
+ */
+  const locations = ['서울특별시', '강원도','경기도','충청남도','충청북도','전라남도','전라북도'];
+  function handleKeyUpSearchLocation({target}){
+    setSearchLocationText(target.value);
+    const value = target.value.trim();
+    if(value === ''){
+      setCurrentSearchLocation([]);
+      return;
+    }
+    const result = [];
+    locations.map(location=>{
+      if(location.includes(value)){
+        result.push(location);
       }
+      return null;
     });
-    return data;
+    setCurrentSearchLocation(result);
   }
 
-  function handleCustomerListOnClick(customerId){
-    getCustomer(customerId).then(({data})=>{
-      setPurchasingManagers(data.purchasingManagers);
-      setCustomer(data);
-    });
+  function handleClickSearchLocationList(location){
+    setSearchLocationText(location);
+    setCurrentSearchLocation([]);
   }
-
-  function handleSearchBtnOnClick(){
-    const search = {};
-    if(searchText.current.value.trim() !== ''){
-      search.businessName = searchText.current.value.trim();
-    }
-    if(searchLocation !== '선택'){
-      search.location = searchLocation;
-    }
-    if(searchCategory !== '선택'){
-      search.category = searchCategory;
-    }
-    setSearchDTO(search);
-  }
-
-  function handleInitSearchBtnOnClick(){
-    searchText.current.value = "";
-    setSearchCategory('선택');
-    setSearchLocation('선택');
-  }
-
-  function handleSalesHistoryWriteBtnOnClick(){
-    const _sample = sample;
-    const _catalogue = catalogue;
-    const _reactivity = reactivity;
-
-    const salesHistory = {
-        customerId : customer.customerId,
-        sample : _sample,
-        catalogue : _catalogue,
-        content : salesHistoryContent.current.value.trim(),
-        reactivity : _reactivity,
-    }
-    if(callReservationDate.current.value !== ''){
-      salesHistory.callReservationDate = callReservationDate.current.value;
-    }
-    saveSalesHistory(salesHistory);
-  }
-
-  function saveSalesHistory(salesHistory){
-    axios.post(`http://192.168.45.128:8000/api/sales-history`, salesHistory, {
-      headers : {
-          Authorization : `Bearer ${localStorage.getItem('access_token')}`
-      }
-    }).then(({data})=>{
-      alert('영업 기록이 정상적으로 등록되었습니다.');
-    }).catch(({response}) =>{
-      alert(response.data[0]);
-    });
-  }
-
-  useEffect(() => {
-  }, [customer]);
 
   return (
-    <>
-      <Page title="Dashboard | Minimal-UI">
-        <Container maxWidth="xl">
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={12} md={12}>
-              <Card>
-                <CardContent>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Stack direction="row" alignItems="center" spacing={3}>
-                      <Stack direction="row" spacing={3}>
-                        <FormControl variant="standard" sx={{ m: 1, minWidth: 200, margin: '0' }}>
-                          <TextField id="standard-basic" label="고객명" variant="standard" inputRef={searchText}/>
-                        </FormControl>
-                        <FormControl variant="standard" sx={{ m: 1, minWidth: 200, margin: '0' }}>
-                          <InputLabel>지역</InputLabel>
-                          <Select value={searchLocation} onChange={(({target})=>setSearchLocation(target.value))}>
-                            <MenuItem value="선택">선택</MenuItem>
-                            <MenuItem value="서울특별시">서울특별시</MenuItem>
-                            <MenuItem value="경기도">경기도</MenuItem>
-                            <MenuItem value="강원도">강원도</MenuItem>
-                            <MenuItem value="충청남도">충청남도</MenuItem>
-                            <MenuItem value="충청북도">충청북도</MenuItem>
-                            <MenuItem value="전라남도">전라남도</MenuItem>
-                            <MenuItem value="전라북도">전라북도</MenuItem>
-                            <MenuItem value="경상남도">경상남도</MenuItem>
-                            <MenuItem value="경상북도">경상북도</MenuItem>
-                          </Select>
-                        </FormControl>
-                        <FormControl variant="standard" sx={{ m: 1, minWidth: 200, margin: '0' }}>
-                          <InputLabel>분류</InputLabel>
-                          <Select value={searchCategory} onChange={(({target})=>setSearchCategory(target.value))}>
-                            <MenuItem value="선택">선택</MenuItem>
-                            <MenuItem value="우리은행">우리은행</MenuItem>
-                            <MenuItem value="수협">수협</MenuItem>
-                            <MenuItem value="농협">농협</MenuItem>
-                            <MenuItem value="우체국">우체국</MenuItem>
-                            <MenuItem value="국민건강보험공단">국민건강보험공단</MenuItem>
-                            <MenuItem value="근로복지공단">근로복지공단</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Stack>
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
-                      <Button variant="contained" onClick={()=>handleSearchBtnOnClick()}>찾기</Button>
-                      <Button variant="contained" color="error" onClick={()=>handleInitSearchBtnOnClick()}>
-                        지우기
-                      </Button>
-                    </Stack>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={12} md={4}>
-              <Card style={{ minHeight: '680px' }}>
-                <CardContent>
-                  <CustomerList searchDTO={searchDTO} onClick={(customer)=>handleCustomerListOnClick(customer.customerId)}/>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={12} md={8}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={12} md={12}>
-                  <Card>
-                    <CardContent>
-                      <CustomerInfoTable
-                        info={['고객명', '사업자 번호', 'FAX', '영업담당자']}
-                        info0={customer && customer.businessInfo ? `${customer.businessInfo.name} ${customer.saleState === 'SALE' ? "[영업중]" : "[영업중지]"}` : ""}
-                        info1={customer && customer.businessInfo ? customer.businessInfo.number : ""}
-                        info2={customer ? customer.fax : ""}
-                        info03={customer ? "" : ""}
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} sm={12} md={12}>
-                  <Card>
-                    <CardContent>
-                      {purchasingManagers.map((purchasingManager)=>(
-                        <CustomerInfoTable
-                          info={['구매담당자', '직위', '전화', 'e-mail']}
-                          info0={purchasingManager.name}
-                          info1={purchasingManager.jobTitle ? purchasingManager.jobTitle : ""}
-                          info2={purchasingManager.contact.mainTel}
-                          info3={purchasingManager.email ? purchasingManager.email : ""}
-                        />
-                      ))}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} sm={12} md={5}>
-                  <Card>
-                    <CardContent>
-                      <Stack direction="column" spacing={3}>
-                        <Stack
-                          direction="row"
-                          divider={<Divider orientation="vertical" flexItem />}
-                          spacing={2}
-                        >
-                          <TextField
-                            inputRef={callReservationDate}
-                            fullWidth
-                            id="date"
-                            label="예약콜 설정"
-                            type="date"
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                          />
-                        </Stack>
-                        <FormGroup>
-                          <FormControlLabel control={<Checkbox checked={sample} onChange={()=>setSample(!sample)}/>} label="샘플 제공 여부" />
-                          <FormControlLabel control={<Checkbox checked={catalogue} onChange={()=>setCatalogue(!catalogue)}/>} label="카탈로그 제공 여부" />
-                        </FormGroup>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">반응도</InputLabel>
-                          <Select
-                            label="반응도"
-                            value={reactivity}
-                            onChange={({target})=>setReactivity(target.value)}
-                          >
-                            <MenuItem value="ONE">매우 나쁨</MenuItem>
-                            <MenuItem value="TWO">나쁨</MenuItem>
-                            <MenuItem value="THREE">보통</MenuItem>
-                            <MenuItem value="FOUR">좋음</MenuItem>
-                            <MenuItem value="FIVE">매우 좋음</MenuItem>
-                          </Select>
-                        </FormControl>
-                        <TextField
-                          inputRef={salesHistoryContent}
-                          label="영업 기록 메모"
-                          multiline
-                          rows={5}
-                        />
-                        <Button variant="contained" onClick={()=>handleSalesHistoryWriteBtnOnClick()}>영업 기록 등록</Button>
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} sm={12} md={7}>
-                  <Card>
-                    <CardContent>
-                      <SalesHistoryList customerId={customer.customerId}/>
-                    </CardContent>
-                  </Card>
-                  <br/>
-                  <Card>
-                    <CardContent>
-                      <OrderList size={5} customerId={customer.customerId ? customer.customerId : ""}/>
-                    </CardContent>
-                  </Card>
-                </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Card>
+          <CardContent>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <TextField fullWidth label="고객 업체명" variant="outlined" />
+              </Grid>
+              <Grid item xs={3}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">분류</InputLabel>
+                  <Select label="분류" value="선택">
+                    <MenuItem value="선택">선택</MenuItem>
+                    <MenuItem value="우리은행">우리은행</MenuItem>
+                    <MenuItem value="수협">수협</MenuItem>
+                    <MenuItem value="농협">농협</MenuItem>
+                    <MenuItem value="우체국">우체국</MenuItem>
+                    <MenuItem value="국민건강보험공단">국민건강보험공단</MenuItem>
+                    <MenuItem value="근로복지공단">근로복지공단</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={3}>
+                <TextField fullWidth value={searchLocationText} onChange={(event)=>handleKeyUpSearchLocation(event)} label="지역" variant="outlined" />
+                <div>
+                  <Paper elevation={0} >
+                    {currentSearchLocation.map(location=>(
+                      <ListItemButton component="div">
+                        <ListItemText primary={location} onClick={()=>handleClickSearchLocationList(location)}/>
+                      </ListItemButton>  
+                    ))}
+                  </Paper>
+                </div>
+              </Grid>
+              <Grid item xs={2}>
+                <Button variant="contained" size="large" fullWidth>
+                  찾기
+                </Button>
               </Grid>
             </Grid>
-          </Grid>
-        </Container>
-      </Page>
-    </>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12}>
+        <Card>
+          <CardContent>
+            <Grid container spacing={2}>
+              <Grid item xs={2}>
+                <FormControl fullWidth variant="standard">
+                  <InputLabel id="demo-simple-select-label">정렬 기준</InputLabel>
+                  <Select label="정렬 기준" value={30}>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <FormControl fullWidth variant="standard">
+                  <InputLabel id="demo-simple-select-label">보기</InputLabel>
+                  <Select label="보기" value={10}>
+                  <MenuItem value={10}>10개씩 보기</MenuItem>
+                  <MenuItem value={30}>30개씩 보기</MenuItem>
+                  <MenuItem value={50}>50개씩 보기</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4} />
+              <Grid item xs={2}>
+                <Button variant="outlined" size="large" fullWidth color="error">
+                  고객 등록
+                </Button>
+              </Grid>
+              <Grid item xs={2}>
+                <Button variant="outlined" size="large" fullWidth color="success">
+                  관심 고객 등록
+                </Button>
+              </Grid>
+            </Grid>
+            <br />
+            <TableContainer component={Paper}>
+              <Chip label="* 총 [100]건의 고객 리스트 데이터가 존재합니다." variant="outlined" color="primary" />
+              <br/>
+              <br/>
+              <Table size="small" sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center" style={{ width: 10 }} />
+                    <TableCell align="center">고객 업체명</TableCell>
+                    <TableCell align="center">고객 분류</TableCell>
+                    <TableCell align="center">고객 지역</TableCell>
+                    <TableCell align="center">고객 상태</TableCell>
+                    <TableCell align="center">주문 내역</TableCell>
+                    <TableCell align="center">영업 내역</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow hover style={{ cursor: 'pointer' }}>
+                    <TableCell align="center" style={{ width: 10 }}>
+                      <Checkbox {...{ inputProps: { 'aria-label': 'Checkbox demo' } }} />
+                    </TableCell>
+                    <TableCell align="center">고객 업체명</TableCell>
+                    <TableCell align="center">고객 분류</TableCell>
+                    <TableCell align="center">고객 지역</TableCell>
+                    <TableCell align="center">고객 상태</TableCell>
+                    <TableCell align="center">
+                      <Button>보기</Button>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button>보기</Button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <br />
+            <ButtonGroup variant="text" aria-label="text button group">
+              <Button>이전</Button>
+              <Button>다음</Button>
+            </ButtonGroup>
+          </CardContent>
+        </Card>
+      </Grid>
+    </Grid>
   );
 }
