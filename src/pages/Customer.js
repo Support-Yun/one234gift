@@ -23,10 +23,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { ca } from 'date-fns/locale';
 
 export default function Customer() {
+  const [showCount, setShowCount] = useState(10);
   const [searchLocationText, setSearchLocationText] = useState('');
+  const [searchCategoryText, setSearchCategoryText] = useState('');
+
   const [currentSearchLocation, setCurrentSearchLocation] = useState([]);
+  const [currentSearchCategory, setCurrentSearchCategory] = useState([]);
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
@@ -43,9 +48,10 @@ export default function Customer() {
 /**
  * handler
  */
-  const locations = ['서울특별시', '강원도','경기도','충청남도','충청북도','전라남도','전라북도'];
-  function handleKeyUpSearchLocation({target}){
-    setSearchLocationText(target.value);
+ const locations = ['서울특별시', '강원도','경기도','충청남도','충청북도','전라남도','전라북도'];
+ const categorys = ['우리은행', '수협','농협','우체국','국민건강보험공단','근로복지공단'];
+ function handleKeyUpSearchLocation({target}){
+    setSearchLocationText(target.value.trim());
     const value = target.value.trim();
     if(value === ''){
       setCurrentSearchLocation([]);
@@ -66,6 +72,28 @@ export default function Customer() {
     setCurrentSearchLocation([]);
   }
 
+  function handleKeyUpSearchCategory({target}){
+    setSearchCategoryText(target.value.trim());
+    const value = target.value.trim();
+    if(value === ''){
+      setCurrentSearchCategory([]);
+      return;
+    }
+    const result = [];
+    categorys.map(category=>{
+      if(category.includes(value)){
+        result.push(category);
+      }
+      return null;
+    });
+    setCurrentSearchCategory(result);
+  }
+
+  function handleClickSearchCategoryList(category){
+    setSearchCategoryText(category);
+    setCurrentSearchCategory([]);
+  }
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -76,18 +104,16 @@ export default function Customer() {
                 <TextField fullWidth label="고객 업체명" variant="outlined" />
               </Grid>
               <Grid item xs={3}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">분류</InputLabel>
-                  <Select label="분류" value="선택">
-                    <MenuItem value="선택">선택</MenuItem>
-                    <MenuItem value="우리은행">우리은행</MenuItem>
-                    <MenuItem value="수협">수협</MenuItem>
-                    <MenuItem value="농협">농협</MenuItem>
-                    <MenuItem value="우체국">우체국</MenuItem>
-                    <MenuItem value="국민건강보험공단">국민건강보험공단</MenuItem>
-                    <MenuItem value="근로복지공단">근로복지공단</MenuItem>
-                  </Select>
-                </FormControl>
+                <TextField fullWidth value={searchCategoryText} onChange={(event)=>handleKeyUpSearchCategory(event)} label="분류" variant="outlined" />
+                <div>
+                  <Paper elevation={0} >
+                    {currentSearchCategory.map(category=>(
+                      <ListItemButton component="div">
+                        <ListItemText primary={category} onClick={()=>handleClickSearchCategoryList(category)}/>
+                      </ListItemButton>  
+                    ))}
+                  </Paper>
+                </div>
               </Grid>
               <Grid item xs={3}>
                 <TextField fullWidth value={searchLocationText} onChange={(event)=>handleKeyUpSearchLocation(event)} label="지역" variant="outlined" />
@@ -116,23 +142,15 @@ export default function Customer() {
             <Grid container spacing={2}>
               <Grid item xs={2}>
                 <FormControl fullWidth variant="standard">
-                  <InputLabel id="demo-simple-select-label">정렬 기준</InputLabel>
-                  <Select label="정렬 기준" value={30}>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={2}>
-                <FormControl fullWidth variant="standard">
                   <InputLabel id="demo-simple-select-label">보기</InputLabel>
-                  <Select label="보기" value={10}>
-                  <MenuItem value={10}>10개씩 보기</MenuItem>
-                  <MenuItem value={30}>30개씩 보기</MenuItem>
-                  <MenuItem value={50}>50개씩 보기</MenuItem>
+                  <Select onChange={({target})=>setShowCount(target.value)} label="보기" value={showCount}>
+                    <MenuItem value={10}>10개씩 보기</MenuItem>
+                    <MenuItem value={30}>30개씩 보기</MenuItem>
+                    <MenuItem value={50}>50개씩 보기</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={4} />
+              <Grid item xs={6} />
               <Grid item xs={2}>
                 <Button variant="outlined" size="large" fullWidth color="error">
                   고객 등록

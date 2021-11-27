@@ -12,8 +12,12 @@ import {
   Divider,
   Button,
   CardHeader,
-  Stack
+  Stack,
+  IconButton
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+
 import * as Yup from 'yup';
 
 import { useEffect, useState } from 'react';
@@ -22,6 +26,15 @@ import CustomerInfoInputTable from '../components/table/CustomerInfoInputTable';
 import Page from '../components/Page';
 
 export default function AddCustomer() {
+  const [parchasingMangers,setParchsingManagers] = useState([
+    {
+      buyerName : '',
+      buyerSpot : '',
+      buyerCall1: '',
+      buyerCall2: '',
+      buyerEmail: ''
+    }
+  ]);
   const LoginSchema = Yup.object().shape({
     category: Yup.string().required('카테고리를 선택해주세요'),
     location: Yup.string().required('지역을 선택해주세요'),
@@ -110,7 +123,32 @@ export default function AddCustomer() {
     });
   }
 
+  function handleAddPurchasingMangerBtn(){
+    if(parchasingMangers.length === 3){
+      alert('구매 담당자는 최대 3명까지 등록 가능합니다.');
+      return;
+    }
+    setParchsingManagers([...parchasingMangers, {
+      buyerName : '',
+      buyerSpot : '',
+      buyerCall1: '',
+      buyerCall2: '',
+      buyerEmail: ''
+    }]);
+  }
+
+  function handleRemovePurchasingMangerBtn(id){
+    if(parchasingMangers.length === 1){
+      alert('구매 담당자는 최소 한명 이상 존재해야합니다.');
+      return;
+    }
+    setParchsingManagers(parchasingMangers.filter((p, idx)=>idx !== id));
+  }
+
   const { errors, touched, isSubmitting, setSubmitting, handleSubmit, getFieldProps, handleReset } = formik;
+
+  useEffect(()=>{
+  },[parchasingMangers]);
 
   return (
     <FormikProvider value={formik}>
@@ -121,13 +159,15 @@ export default function AddCustomer() {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12} md={12}>
                   <Card>
-                    <CardHeader title="신규 고객 등록" />
-                    <br />
-                    <Divider />
                     <CardHeader title="업체 정보" />
                     <CardContent>
+                      <span style={{fontSize:12, color: 'red'}}>
+                        * 표시 항목은 필수 입력 항목입니다.
+                      </span>
+                      <br/>
+                      <br/>
                       <CustomerInfoInputTable
-                        info={['*분류', '*고객명', '*지역', '팩스', '사업자번호']}
+                        info={['* 분류', '* 고객명', '* 지역', '팩스', '사업자번호']}
                         info0={
                           <FormControl variant="standard" fullWidth sx={{ m: 1, minWidth: 120 }}>
                             <Select
@@ -152,6 +192,7 @@ export default function AddCustomer() {
                             size="small"
                             {...getFieldProps('customerName')}
                             fullWidth
+                            placeholder="ex)의정부 지사"
                           />
                         }
                         info2={
@@ -178,6 +219,7 @@ export default function AddCustomer() {
                             size="small"
                             fullWidth
                             {...getFieldProps('fax')}
+                            placeholder="ex)000-0000-0000"
                           />
                         }
                         info4={
@@ -188,6 +230,7 @@ export default function AddCustomer() {
                             size="small"
                             {...getFieldProps('businessNumber')}
                             fullWidth
+                            placeholder="ex)00-000-00000"
                           />
                         }
                         minW={650}
@@ -197,63 +240,90 @@ export default function AddCustomer() {
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>
                   <Card>
-                    <CardHeader title="구매 담당자 정보" />
+                    <CardHeader title="구매 담당자 정보" 
+                    action={
+                      <Button variant="outlined" startIcon={<AddIcon />} onClick={()=>handleAddPurchasingMangerBtn()}>
+                        구매 담당자 추가     
+                      </Button>
+                    }/>
                     <CardContent>
-                      <CustomerInfoInputTable
-                        info={['구매담당자', '직위', '연락처', '기타연락처', '이메일', '']}
-                        info0={
-                          <TextField
-                            id="standard-basic"
-                            label=""
-                            variant="standard"
-                            size="small"
-                            fullWidth
-                            {...getFieldProps('buyerName')}
-                          />
-                        }
-                        info1={
-                          <TextField
-                            id="standard-basic"
-                            label=""
-                            variant="standard"
-                            size="small"
-                            {...getFieldProps('buyerSpot')}
-                            fullWidth
-                          />
-                        }
-                        info2={
-                          <TextField
-                            id="standard-basic"
-                            label=""
-                            variant="standard"
-                            size="small"
-                            {...getFieldProps('buyerCall1')}
-                            fullWidth
-                          />
-                        }
-                        info3={
-                          <TextField
-                            id="standard-basic"
-                            label=""
-                            variant="standard"
-                            size="small"
-                            {...getFieldProps('buyerCall2')}
-                            fullWidth
-                          />
-                        }
-                        info4={
-                          <TextField
-                            id="standard-basic"
-                            label=""
-                            variant="standard"
-                            size="small"
-                            {...getFieldProps('buyerEmail')}
-                            fullWidth
-                          />
-                        }
-                        info5=""
-                        minW={650}
-                      />
+                    <span style={{fontSize:12, color: 'red'}}>
+                      * 표시 항목은 필수 입력 항목입니다.
+                    </span>
+                    <br/>
+                    {
+                      parchasingMangers.map((purchasingManger, idx)=>(
+                        <>
+                          <br/>
+                          <div style={{marginBottom:10}}>
+                          # 구매 담당자 {idx + 1}
+                          <IconButton aria-label="delete" onClick={()=>handleRemovePurchasingMangerBtn(idx)}>
+                            <DeleteIcon />
+                          </IconButton>
+                          </div>
+                            <CustomerInfoInputTable
+                              info={['* 구매담당자', '직위', '* 연락처', '기타연락처', '이메일', '']}
+                              info0={
+                                <TextField
+                                  id="standard-basic"
+                                  label=""
+                                  variant="standard"
+                                  size="small"
+                                  fullWidth
+                                  {...getFieldProps('buyerName')}
+                                  placeholder="ex)홍길동"
+                                />
+                              }
+                              info1={
+                                <TextField
+                                  id="standard-basic"
+                                  label=""
+                                  variant="standard"
+                                  size="small"
+                                  {...getFieldProps('buyerSpot')}
+                                  fullWidth
+                                  placeholder="ex)대리"
+                                />
+                              }
+                              info2={
+                                <TextField
+                                  id="standard-basic"
+                                  label=""
+                                  variant="standard"
+                                  size="small"
+                                  {...getFieldProps('buyerCall1')}
+                                  fullWidth
+                                  placeholder="ex)000-0000-0000"
+                                />
+                              }
+                              info3={
+                                <TextField
+                                  id="standard-basic"
+                                  label=""
+                                  variant="standard"
+                                  size="small"
+                                  {...getFieldProps('buyerCall2')}
+                                  fullWidth
+                                  placeholder="ex)000-0000-0000"
+                                />
+                              }
+                              info4={
+                                <TextField
+                                  id="standard-basic"
+                                  label=""
+                                  variant="standard"
+                                  size="small"
+                                  {...getFieldProps('buyerEmail')}
+                                  fullWidth
+                                  placeholder="ex)xxxx@xxxx.xxx 또는 xxxx@xxxx.xx.xxx"
+                                />
+                              }
+                              info5=""
+                              minW={650}
+                            />
+                        </>
+                      ))
+                    }
                     </CardContent>
                   </Card>
                 </Grid>
